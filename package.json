@@ -1,0 +1,44 @@
+{
+  "name": "time-tracker-be",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Den Lahodnyi",
+  "license": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "serve": "dotenvx run -f .env.development.local -f .env.development -- nodemon",
+    "prestart": "tsc",
+    "start": "dotenvx run -f .env.production.local -f .env.production -- node dist",
+    "test": "jest",
+    "lint": "npx eslint ."
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.6",
+    "@babel/preset-env": "^7.24.6",
+    "@babel/preset-typescript": "^7.24.6",
+    "@eslint/js": "^9.3.0",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/eslint-config-prettier": "^6.11.3",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.12",
+    "babel-jest": "^29.7.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jest": "^28.5.0",
+    "eslint-plugin-jest-extended": "^2.4.0",
+    "jest": "^29.7.0",
+    "jest-extended": "^4.0.2",
+    "nodemon": "^3.1.1",
+    "prettier": "3.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.10.0"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^0.44.0",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0"
+  }
+}
