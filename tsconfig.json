@@ -3,9 +3,12 @@
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": ".",
-    "paths": {
-      "~/*": ["src/*"]
-    }
+    "module": "ESNext",
+    "moduleResolution": "Node10"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "files": ["env.ts"],
+  "ts-node": {
+    "transpileOnly": true
+  }
 }

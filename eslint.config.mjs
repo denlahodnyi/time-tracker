@@ -56,10 +56,8 @@ export default tseslint.config(
         {
           'newlines-between': 'always',
           groups: [
-            'builtin',
-            'external',
-            'internal',
-            ['parent', 'sibling', 'index'],
+            ['builtin', 'external'],
+            ['internal', 'parent', 'sibling', 'index'],
           ],
           pathGroups: [
             {
@@ -69,6 +67,41 @@ export default tseslint.config(
             },
           ],
           distinctGroup: false,
+        },
+      ],
+      'padding-line-between-statements': [
+        2,
+        // blank before return
+        { blankLine: 'always', prev: 'expression', next: '*' },
+        // ...but not between
+        { blankLine: 'any', prev: 'expression', next: 'expression' },
+        // ...allow before break
+        { blankLine: 'any', prev: 'expression', next: 'break' },
+        // blank before return
+        { blankLine: 'always', prev: '*', next: 'return' },
+        // blank after if
+        { blankLine: 'always', prev: 'if', next: '*' },
+        // ...but not between
+        { blankLine: 'never', prev: 'if', next: 'if' },
+        // blank after single var
+        { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+        // ...but not between
+        {
+          blankLine: 'any',
+          prev: ['const', 'let', 'var'],
+          next: ['const', 'let', 'var'],
+        },
+        // blank before single export
+        {
+          blankLine: 'always',
+          prev: '*',
+          next: 'export',
+        },
+        // ...but not between
+        {
+          blankLine: 'any',
+          prev: 'export',
+          next: 'export',
         },
       ],
     },
@@ -81,6 +114,21 @@ export default tseslint.config(
         {
           fixStyle: 'inline-type-imports',
           prefer: 'type-imports',
+        },
+      ],
+      '@typescript-eslint/padding-line-between-statements': [
+        2,
+        // blank after single type
+        {
+          blankLine: 'always',
+          prev: ['interface', 'type'],
+          next: '*',
+        },
+        // ...but not between
+        {
+          blankLine: 'any',
+          prev: ['interface', 'type'],
+          next: ['interface', 'type'],
         },
       ],
     },
