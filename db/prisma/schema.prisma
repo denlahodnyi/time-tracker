@@ -1,0 +1,23 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  firstName String   @map("first_name") @db.VarChar(50)
+  lastName  String?  @default("") @map("last_name") @db.VarChar(50)
+  email     String   @unique @db.VarChar(255)
+  avatarUrl String?  @default("") @map("avatar_url") @db.VarChar(200)
+  bio       String?  @default("") @db.VarChar(200)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@map("users")
+}

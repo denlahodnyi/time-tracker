@@ -1,12 +1,11 @@
-import express from 'express';
+import '@total-typescript/ts-reset';
 
-const app = express();
-const PORT = process.env.PORT;
+import { env } from '../env.js';
+import { initializeClient } from '../db/index.js';
+import createServer from './server/createServer.js';
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello world</h1>');
-});
+initializeClient();
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+createServer().listen(env.PORT, () => {
+  console.log(`Listening on port ${env.PORT}`);
 });
