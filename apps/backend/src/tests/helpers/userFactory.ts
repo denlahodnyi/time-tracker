@@ -1,4 +1,4 @@
-import type { User } from '@prisma/client';
+import type { User } from '@libs/prisma';
 import { Factory } from 'fishery';
 
 import { type Client } from '../../../db/client.js';

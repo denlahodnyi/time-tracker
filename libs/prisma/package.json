@@ -1,0 +1,27 @@
+{
+  "name": "@libs/prisma",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "prisma": {
+    "schema": "schema.prisma"
+  },
+  "scripts": {
+    "build": "tsup",
+    "prisma": "pnpm dlx prisma",
+    "generate": "pnpm prisma generate",
+    "push": "pnpm env:dev prisma db push",
+    "migrate:status": "pnpm env:dev prisma migrate status",
+    "migrate:dev": "pnpm env:dev prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "prisma": "^5.15.0",
+    "tsup": "^8.1.0"
+  }
+}

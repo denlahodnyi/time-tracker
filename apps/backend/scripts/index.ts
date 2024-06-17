@@ -16,7 +16,7 @@ function invokeCommand(command: string) {
 switch (scriptArgs[0]) {
   case 'serve': {
     // Start dev server
-    invokeCommand('dotenvx run -f .env.development.local -f .env.development -f .env -- nodemon');
+    invokeCommand('dotenvx run -f .env.development.local -f .env.development -f .env -- nodemon src/index.ts');
     break;
   }
   case 'start': {
@@ -36,7 +36,9 @@ switch (scriptArgs[0]) {
   }
   case 'push': {
     // Push to database bypassing migrations (only for prototyping)
-    invokeCommand('dotenvx run -f .env.development.local -f .env.development -f .env -- npx prisma db push');
+    invokeCommand(
+      'dotenvx run -f .env.development.local -f .env.development -f .env -- pnpm -F @libs/prisma prisma db push',
+    );
     break;
   }
   default: {

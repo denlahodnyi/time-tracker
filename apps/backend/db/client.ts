@@ -1,6 +1,6 @@
 import pg from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { type Prisma, PrismaClient } from '@prisma/client';
+import { type Prisma, PrismaClient } from '@libs/prisma';
 
 import { env } from '../env.js';
 
