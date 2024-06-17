@@ -5,6 +5,8 @@
 
 import type { Config } from 'jest';
 
+const esmModules = ['chalk'];
+
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -185,7 +187,9 @@ const config: Config = {
   //   "/node_modules/",
   //   "\\.pnp\\.[^\\/]+$"
   // ],
-  transformIgnorePatterns: ['/node_modules/(?!(chalk)/)'],
+  transformIgnorePatterns: [
+    `node_modules/(?!(?:.pnpm/)?(${esmModules.join('|')}))`,
+  ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

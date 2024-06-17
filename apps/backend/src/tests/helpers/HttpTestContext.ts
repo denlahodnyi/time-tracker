@@ -5,7 +5,7 @@ import type { Application } from 'express';
 import pg from 'pg';
 import pgFormat from 'pg-format';
 import request from 'supertest';
-import type { User } from '@prisma/client';
+import type { User } from '@libs/prisma';
 
 import createServer from '../../server/createServer.js';
 import { env } from '../../../env.js';
@@ -74,7 +74,7 @@ export default class HttpTestContext {
     try {
       // Create new name for temporary role and schema that will be used instead
       // of default public schema
-      // Must not start from number
+      // Must not start with number
       this.randName = 'a' + randomBytes(5).toString('hex');
       this.pool = new pg.Pool({ connectionString: env.DATABASE_URL });
 
@@ -109,7 +109,8 @@ export default class HttpTestContext {
 
       // Fill new database schema with tables
       const { stdout, stderr } = await execAsync(
-        'npx prisma db push --skip-generate',
+        // TODO: check whether it can be invoked from separate file
+        'pnpm -F @libs/prisma prisma db push --skip-generate',
         {
           env: {
             ...process.env,
