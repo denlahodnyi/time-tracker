@@ -8,6 +8,7 @@ declare global {
   namespace Express {
     interface Request {
       user: { id: number };
+      isCurrentUserReq: boolean;
     }
   }
 }
@@ -15,15 +16,13 @@ declare global {
 interface Options {
   verifyAccessByParam?: string;
 }
+// @TODO: clear on 404 when user is not found
 
 const requireAuth = (options?: Options): Handler =>
   asyncHandler(async (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader?.split('Bearer ')[1];
+    if (!req.cookies.auth) throw errorFactory.create('unauthorized');
 
-    if (!token) throw errorFactory.create('unauthorized');
-
-    const jwtPayload = verifyJwt(token);
+    const jwtPayload = verifyJwt(req.cookies.auth);
 
     if (
       !jwtPayload.userId ||

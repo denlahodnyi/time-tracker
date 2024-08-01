@@ -27,6 +27,16 @@ export default class HttpTestContext {
       throw new Error('HttpTestContext error: client is not defined');
   }
 
+  static parseAgentAuthCookie(cookies: string[]) {
+    const authCookie = cookies.filter((str) => str.includes('auth='))[0];
+
+    if (!authCookie) return null;
+
+    const match = authCookie.match(/auth=(.+?)(?=;)/);
+
+    return match?.[1] ? { token: match?.[1] } : null;
+  }
+
   get agent() {
     return request(this.app);
   }
@@ -37,6 +47,7 @@ export default class HttpTestContext {
         'Cannot create auth agent. Call prepareEach() to prepare db connection',
       );
 
+    const agent = this.agent;
     const dummyUser = user || userFactory.build();
 
     const createdUser = await userFactory.create(
@@ -51,22 +62,45 @@ export default class HttpTestContext {
     if (!createdUser)
       throw new Error('Cannot create auth agent. Unable to create user');
 
-    const { body } = await this.agent.post(LOGIN_ROUTE).send({
+    const { headers } = await agent.post(LOGIN_ROUTE).send({
       email: dummyUser.email,
       password: dummyUser.password,
     });
 
-    if (!body.data.token)
-      throw new Error('Cannot create auth agent. Missed token');
+    // COOKIE BASED AUTH
+    const cookies = headers['set-cookie'] as unknown as string[];
+    const authCookie = cookies.filter((str) => str.includes('auth='))[0];
 
-    const authAgent = request
-      .agent(this.app)
-      .auth(body.data.token, { type: 'bearer' });
+    if (!authCookie) {
+      throw new Error('Cannot create auth agent. Missed token');
+    }
+
+    const cookieSetterArgs = ['Cookie', authCookie] as const;
+    // save original methods to rewrite them later
+    const get = agent.get.bind(agent);
+    const post = agent.post.bind(agent);
+    const put = agent.put.bind(agent);
+    const patch = agent.patch.bind(agent);
+    const del = agent.delete.bind(agent);
+
+    // rewrite original methods to ship them with auth cookie in headers
+    agent.get = (...args) => get(...args).set(...cookieSetterArgs);
+    agent.post = (...args) => post(...args).set(...cookieSetterArgs);
+    agent.put = (...args) => put(...args).set(...cookieSetterArgs);
+    agent.patch = (...args) => patch(...args).set(...cookieSetterArgs);
+    agent.delete = (...args) => del(...args).set(...cookieSetterArgs);
+
+    // TOKEN BASED AUTH
+    // if (!body.data.token)
+    //   throw new Error('Cannot create auth agent. Missed token');
+    // const authAgent = request
+    //   .agent(this.app)
+    //   .auth(body.data.token, { type: 'bearer' });
 
     return {
       createdUser,
       dummyUser,
-      agent: authAgent,
+      agent,
     };
   }
 
@@ -108,9 +142,9 @@ export default class HttpTestContext {
       });
 
       // Fill new database schema with tables
-      const { stdout, stderr } = await execAsync(
+      const { /* stdout,  */ stderr } = await execAsync(
         // TODO: check whether it can be invoked from separate file
-        'pnpm -F @libs/prisma prisma db push --skip-generate',
+        'pnpm -F @libs/prisma push --skip-generate',
         {
           env: {
             ...process.env,
@@ -119,9 +153,16 @@ export default class HttpTestContext {
         },
       );
 
-      console.log(`db push stdout:`, stdout);
+      if (stderr) {
+        throw new Error(
+          `Prisma push result: error\nTest: ${expect.getState().currentTestName}\n${stderr}`,
+        );
+      }
 
-      if (stderr) throw new Error(stderr);
+      console.log(
+        'Prisma push result: success\n',
+        `Test: ${expect.getState().currentTestName}`,
+      );
 
       // create Express app
       this.app = createServer();

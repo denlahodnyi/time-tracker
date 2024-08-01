@@ -159,6 +159,24 @@ describe('/users', () => {
       expect(status).toBe(401);
       getErrorResponseExpects(body);
     });
+
+    it('returns 400 status code when updated email is already taken', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const createdUser2 = await userFactory.create(
+        {},
+        { transient: { client: httpCtx.client } },
+      );
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const { body, status } = await agent
+        .patch(`/api/users/${createdUser.id}`)
+        .send({
+          email: createdUser2.email,
+        });
+
+      expect(status).toBe(400);
+      getErrorResponseExpects(body, true);
+    });
   });
 
   describe('[DELETE] /users/:user_id', () => {

@@ -22,13 +22,16 @@ module.exports = {
   ignorePatterns: ['!**/.server', '!**/.client'],
 
   // Base config
-  extends: ['eslint:recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@tanstack/eslint-plugin-query/recommended',
+  ],
 
   overrides: [
     // React
     {
       files: ['**/*.{js,jsx,ts,tsx}'],
-      plugins: ['react', 'jsx-a11y'],
+      plugins: ['react', 'jsx-a11y', 'import'],
       extends: [
         'plugin:react/recommended',
         'plugin:react/jsx-runtime',
@@ -85,6 +88,29 @@ module.exports = {
             next: 'export',
           },
         ],
+        'import/order': [
+          2,
+          {
+            'newlines-between': 'always',
+            groups: [
+              ['builtin', 'external'],
+              ['internal', 'parent', 'sibling', 'index'],
+            ],
+            pathGroups: [
+              {
+                pattern: '~/**',
+                group: 'internal',
+                position: 'before',
+              },
+            ],
+            distinctGroup: false,
+            alphabetize: {
+              order: 'asc',
+              caseInsensitive: true,
+            },
+            warnOnUnassignedImports: true,
+          },
+        ],
       },
     },
 
@@ -112,7 +138,26 @@ module.exports = {
         'plugin:import/typescript',
         'prettier',
       ],
-      rules: {},
+      rules: {
+        '@typescript-eslint/naming-convention': [
+          2,
+          // Enforce that interface names do not begin with an I
+          {
+            selector: 'interface',
+            format: ['PascalCase'],
+            custom: {
+              regex: '^I[A-Z]',
+              match: false,
+            },
+          },
+          // Enforce that type parameters (generics) are prefixed with T
+          {
+            selector: 'typeParameter',
+            format: ['PascalCase'],
+            prefix: ['T'],
+          },
+        ],
+      },
     },
 
     // Node
@@ -120,6 +165,27 @@ module.exports = {
       files: ['.eslintrc.cjs'],
       env: {
         node: true,
+      },
+    },
+
+    // Tests
+    {
+      files: [
+        '**/tests/**/?(*.)+(spec|test).[jt]s?(x)',
+        '**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)',
+        '**/?(*.)+(spec|test).[jt]s?(x)',
+        'setup-test-env.ts',
+      ],
+      plugins: ['jest', 'testing-library'],
+      extends: ['plugin:testing-library/react'],
+      env: {
+        jest: true,
+      },
+      settings: {
+        'import/internal-regex': '^test-utils$',
+        jest: {
+          version: 29,
+        },
       },
     },
   ],

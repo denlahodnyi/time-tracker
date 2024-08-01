@@ -1,11 +1,15 @@
 import { client } from '../../../db/index.js';
 import { excludeObjectKeys } from '../../utils/index.js';
-import { ControllerCreator, errorFactory } from '../../core/helpers/index.js';
+import {
+  errorFactory,
+  UserControllerCreator,
+} from '../../core/helpers/index.js';
 
-class GetUserByIdController extends ControllerCreator {
+class GetUserByIdController extends UserControllerCreator {
   async implement(): Promise<void> {
-    const id = Number(this.req.params.user_id);
-    const user = await client.user.findUnique({ where: { id } });
+    const user = await client.user.findUnique({
+      where: { id: this.getUserId() },
+    });
 
     if (!user) {
       throw errorFactory.create('not_found', { message: 'User not found' });

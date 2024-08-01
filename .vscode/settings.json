@@ -1,3 +1,4 @@
 {
-  // "eslint.workingDirectories": ["../apps/backend", "../apps/web"]
+  "css.lint.unknownAtRules": "ignore"
+  // "eslint.workingDirectories": ["../apps/backend", "../apps/web"],
 }

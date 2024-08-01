@@ -11,6 +11,15 @@ router.route('/users').get(userController.getUsers.mount);
 
 router.param('user_id', requireAuth({ verifyAccessByParam: 'user_id' }));
 router
+  .route('/users/me')
+  .all(
+    requireAuth(),
+    (req, res, next) => ((req.isCurrentUserReq = true), next()),
+  )
+  .get(userController.getUserById.mount)
+  .patch(userController.updateUser.mount)
+  .delete(userController.deleteUser.mount);
+router
   .route('/users/:user_id')
   .get(userController.getUserById.mount)
   .patch(userController.updateUser.mount)
