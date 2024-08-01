@@ -18,6 +18,7 @@ const EnvSchema = z.object({
   DB_NAME: z.string().min(1),
   DB_SCHEMA: z.string().min(1).default('public'),
   DATABASE_URL: z.string().url(),
+  CORS_ORIGIN: z.string().url().optional(),
 });
 
 const env: z.infer<typeof EnvSchema> = initializeEnvs();

@@ -1,9 +1,17 @@
-import { vitePlugin as remix } from "@remix-run/dev";
-import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+// import MillionLint from '@million/lint';
+import { vitePlugin as remix } from '@remix-run/dev';
+import { remixDevTools } from 'remix-development-tools';
+import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [
+    // MillionLint.vite({
+    //   filter: {
+    //     include: '**/app/*.{tsx,jsx}',
+    //   },
+    // }),
+    remixDevTools(),
     remix({
       future: {
         v3_fetcherPersist: true,

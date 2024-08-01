@@ -45,16 +45,18 @@ describe('/signup', () => {
       expect(body.data.user).not.toHaveProperty('password');
     });
 
-    it('returns valid token', async () => {
-      const { body } = await httpCtx.agent.post('/api/signup').send({
+    it('returns valid cookie', async () => {
+      const { headers } = await httpCtx.agent.post('/api/signup').send({
         firstName: dummyUser.firstName,
         email: dummyUser.email,
         password: dummyUser.password,
       });
+      const cookies = headers['set-cookie'] as unknown as string[];
+      const { token } = HttpTestContext.parseAgentAuthCookie(cookies) || {};
 
-      expect(body.data).toHaveProperty('token');
-      expect(() => verifyJwt(body.data.token)).not.toThrow();
-      expect(verifyJwt(body.data.token)).toHaveProperty('userId');
+      expect(token).toBeDefined();
+      expect(() => verifyJwt(token as string)).not.toThrow();
+      expect(verifyJwt(token as string)).toHaveProperty('userId');
     });
 
     it('returns 400 status code and error status with error message if user is already exist', async () => {
@@ -107,29 +109,30 @@ describe('/signin', () => {
       expect(body).toHaveProperty('status', 'success');
     });
 
-    it('returns user details without password and with valid token when provided valid credentials', async () => {
+    it('returns user details without password and with valid cookie when provided valid credentials', async () => {
       HttpTestContext.assertClient(httpCtx.client);
 
       const user = await userFactory.create(
         { email: dummyUser.email, bio: 'Test bio' },
         { transient: { client: httpCtx.client } },
       );
-
-      const { body } = await httpCtx.agent.post('/api/signin').send({
+      const { body, headers } = await httpCtx.agent.post('/api/signin').send({
         email: dummyUser.email,
         password: dummyUser.password,
       });
+      const cookies = headers['set-cookie'] as unknown as string[];
+      const { token } = HttpTestContext.parseAgentAuthCookie(cookies) || {};
 
+      expect(token).toBeDefined();
       expect(body.data).toHaveProperty('user');
-      expect(body.data).toHaveProperty('token');
       expect(body.data.user).toHaveProperty('firstName', dummyUser.firstName);
       expect(body.data.user).toHaveProperty('lastName', dummyUser.lastName);
       expect(body.data.user).toHaveProperty('email', dummyUser.email);
       expect(body.data.user).toHaveProperty('bio', 'Test bio');
       expect(body.data.user).toHaveProperty('avatarUrl');
       expect(body.data.user).not.toHaveProperty('password');
-      expect(() => verifyJwt(body.data.token)).not.toThrow();
-      expect(verifyJwt(body.data.token)).toHaveProperty('userId', user?.id);
+      expect(() => verifyJwt(token as string)).not.toThrow();
+      expect(verifyJwt(token as string)).toHaveProperty('userId', user?.id);
     });
 
     it("returns 400 status code and error status with error message if user doesn't exist", async () => {

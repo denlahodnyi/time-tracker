@@ -1,4 +1,5 @@
 import type { PrismaClient } from '@libs/prisma';
+import type { ZodFormattedError } from 'zod';
 
 type PrismaModels = {
   [Property in keyof PrismaClient as Property extends `$${string}` | symbol
@@ -6,6 +7,24 @@ type PrismaModels = {
     : Property]: PrismaClient[Property];
 };
 
-type PrismaModelNames = keyof PrismaModels;
+export type PrismaModelNames = keyof PrismaModels;
 
-export { PrismaModelNames };
+export interface CustomFormErrors {
+  _errors?: string[];
+  [key: string]: string[] | CustomFormErrors | undefined;
+}
+
+export interface RecZodLikeFormErrors {
+  [key: string]: undefined | RecZodLikeFormErrors | { _errors?: string[] };
+}
+
+export type ZodLikeFormErrors =
+  | {
+      _errors?: string[];
+    }
+  | RecZodLikeFormErrors;
+
+export type ResponseFormErrors =
+  | ZodFormattedError<unknown>
+  | ZodLikeFormErrors
+  | null;

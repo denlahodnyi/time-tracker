@@ -11,6 +11,7 @@ const config: Config = {
   ...baseConfig,
   // Include only /src/tests/
   testMatch: ['**/src/tests/**/?(*.)+(spec|test).[jt]s?(x)'],
+  noStackTrace: true,
 };
 
 export default config;

@@ -6,12 +6,10 @@ const getErrorResponseExpects = (
 ) => {
   expect(responseBody).not.toHaveProperty('data');
   expect(responseBody).toHaveProperty('status', 'error');
-  expect(responseBody).toHaveProperty('message');
-  expect(responseBody).toHaveProperty('errorCode');
-  expect(responseBody.message).toBeTruthy();
+  expect(responseBody).toHaveProperty('error');
 
   if (isValidationError) {
-    expect(responseBody.fieldErrors).toBeTruthy();
+    expect(responseBody.errors).toBeTruthy();
   }
 };
 

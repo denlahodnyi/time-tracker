@@ -74,7 +74,7 @@ export default class User extends ModelBase<'user'> {
       throw errorFactory.create('bad_request', {
         message: 'Invalid credentials',
         formFields: {
-          password: ["User with provided email doesn't exist"],
+          email: ["User with provided email doesn't exist"],
         },
       });
     }
