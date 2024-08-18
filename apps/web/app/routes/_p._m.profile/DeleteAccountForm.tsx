@@ -21,9 +21,9 @@ export default function DeleteAccountForm() {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <Button
-        variant="destructive"
-        isLoading={isDisabled}
         aria-disabled={isDisabled}
+        isLoading={isDisabled}
+        variant="destructive"
         onClick={() => {
           if (!isDisabled) setIsOpen(true);
         }}
@@ -41,7 +41,7 @@ export default function DeleteAccountForm() {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <fetcher.Form action="/profile" method="post">
-            <AlertDialogAction type="submit" name="_action" value="deleteUser">
+            <AlertDialogAction name="_action" type="submit" value="deleteUser">
               Continue
             </AlertDialogAction>
           </fetcher.Form>

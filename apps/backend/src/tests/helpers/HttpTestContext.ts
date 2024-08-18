@@ -17,10 +17,10 @@ const execAsync = util.promisify(exec);
 const LOGIN_ROUTE = '/api/signin';
 
 export default class HttpTestContext {
-  app!: Application;
-  randName!: string;
-  client!: Client | null;
-  pool!: pg.Pool | null;
+  protected randName!: string;
+  protected pool!: pg.Pool | null;
+  protected app!: Application;
+  public client!: Client | null;
 
   static assertClient(client: Client | null): asserts client is Client {
     if (!client)
@@ -37,11 +37,11 @@ export default class HttpTestContext {
     return match?.[1] ? { token: match?.[1] } : null;
   }
 
-  get agent() {
+  public get agent() {
     return request(this.app);
   }
 
-  async getAuthAgent(user?: User) {
+  public async getAuthAgent(user?: User) {
     if (!this.client || !this.app || !this.pool)
       throw new Error(
         'Cannot create auth agent. Call prepareEach() to prepare db connection',
@@ -104,7 +104,7 @@ export default class HttpTestContext {
     };
   }
 
-  async prepareEach() {
+  public async prepareEach() {
     try {
       // Create new name for temporary role and schema that will be used instead
       // of default public schema
@@ -180,7 +180,7 @@ export default class HttpTestContext {
     }
   }
 
-  async finishEach() {
+  public async finishEach() {
     try {
       if (this.client) await this.client.$disconnect();
       if (this.pool) await this.pool.end();

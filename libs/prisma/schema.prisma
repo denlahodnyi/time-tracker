@@ -9,15 +9,64 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  firstName String   @map("first_name") @db.VarChar(50)
-  lastName  String?  @default("") @map("last_name") @db.VarChar(50)
-  email     String   @unique @db.VarChar(255)
-  avatarUrl String?  @default("") @map("avatar_url") @db.VarChar(200)
-  bio       String?  @default("") @db.VarChar(200)
-  password  String   @db.VarChar(255)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  id          Int           @id @default(autoincrement())
+  firstName   String        @map("first_name") @db.VarChar(50)
+  lastName    String?       @default("") @map("last_name") @db.VarChar(50)
+  email       String        @unique @db.VarChar(255)
+  avatarUrl   String?       @default("") @map("avatar_url") @db.VarChar(200)
+  bio         String?       @default("") @db.VarChar(200)
+  password    String        @db.VarChar(255)
+  tasks       UserTasks[]
+  timeEntries TimeEntries[]
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   @@map("users")
+}
+
+model Task {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(100)
+  description String?       @default("") @db.VarChar(255)
+  // startedAt   DateTime?     @map("started_at") @db.Timestamptz()
+  // finishedAt  DateTime?     @map("finished_at") @db.Timestamptz()
+  // status      TaskStatus  @default(IDLE)
+  users       UserTasks[]
+  timeEntries TimeEntries[]
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@map("tasks")
+}
+
+// enum TaskStatus {
+//   IDLE
+//   IN_PROGRESS
+//   DONE
+// }
+
+model UserTasks {
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int      @map("user_id")
+  task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId     Int      @map("task_id")
+  isAuthor   Boolean  @default(false) @map("is_author")
+  isAssigned Boolean  @default(false) @map("is_assigned")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@id([userId, taskId])
+  @@map("user_tasks")
+}
+
+model TimeEntries {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int       @map("user_id")
+  task       Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId     Int       @map("task_id")
+  startedAt  DateTime? @map("started_at") @db.Timestamptz()
+  finishedAt DateTime? @map("finished_at") @db.Timestamptz()
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@map("time_entries")
 }

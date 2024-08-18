@@ -27,21 +27,23 @@ const SignInInput = z.object({
   password: z.string().trim().min(1, 'Is required'),
 });
 
+// TODO: add test about updating empty fields
+
 const UpdateInput = z.object({
   id: z.number().gte(1),
   firstName: SignUpInput.shape.firstName.optional(),
-  lastName: SignUpInput.shape.firstName.nullable().optional(),
+  lastName: z.string().trim().max(NAME_MAX).nullable().optional(),
   email: SignUpInput.shape.email.optional(),
   bio: z.string().trim().max(BIO_MAX).nullable().optional(),
 }) satisfies z.Schema<
   Pick<Prisma.UserUpdateInput, 'firstName' | 'lastName' | 'bio' | 'email'>
 >;
 
-export default class User extends ModelBase<'user'> {
+export default class UserModel extends ModelBase {
   async signUp(data: z.infer<typeof SignUpInput>) {
     SignUpInput.parse(data);
 
-    const user = await this.clientModel.findUnique({
+    const user = await this.client.user.findUnique({
       where: { email: data.email },
     });
 
@@ -55,7 +57,7 @@ export default class User extends ModelBase<'user'> {
     }
 
     const hashedPassword = await hashPassword(data.password);
-    const newUser = await this.clientModel.create({
+    const newUser = await this.client.user.create({
       data: { ...data, password: hashedPassword },
     });
     const token = signJwt({ userId: newUser.id });
@@ -66,7 +68,7 @@ export default class User extends ModelBase<'user'> {
   async signIn(data: z.infer<typeof SignInInput>) {
     SignInInput.parse(data);
 
-    const user = await this.clientModel.findUnique({
+    const user = await this.client.user.findUnique({
       where: { email: data.email },
     });
 
@@ -98,7 +100,7 @@ export default class User extends ModelBase<'user'> {
   async updateById(data: z.infer<typeof UpdateInput>) {
     const parsedData = UpdateInput.parse(data);
 
-    const user = await this.clientModel.update({
+    const user = await this.client.user.update({
       where: { id: parsedData.id },
       data: excludeObjectKeys(parsedData, ['id']),
     });

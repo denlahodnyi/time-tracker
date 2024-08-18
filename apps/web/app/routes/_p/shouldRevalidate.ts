@@ -6,7 +6,11 @@ export default function shouldRevalidate({
   if (formData) {
     const data = Object.fromEntries(formData);
 
-    return data._action === 'updateUser';
+    return (
+      data._action === 'updateUser' ||
+      data._action === 'deleteTask' ||
+      data._action === 'updateTask'
+    );
   }
 
   return false;

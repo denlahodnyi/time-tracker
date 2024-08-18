@@ -53,6 +53,15 @@ module.exports = {
         },
       },
       rules: {
+        'react/jsx-sort-props': [
+          2,
+          {
+            reservedFirst: ['key', 'ref'],
+            multiline: 'last',
+            shorthandFirst: true,
+            callbacksLast: true,
+          },
+        ],
         'padding-line-between-statements': [
           2,
           // blank before return
@@ -62,7 +71,7 @@ module.exports = {
           // ...allow before break
           { blankLine: 'any', prev: 'expression', next: 'break' },
           // blank before return
-          { blankLine: 'always', prev: '*', next: 'return' },
+          // { blankLine: 'always', prev: '*', next: 'return' },
           // blank after if
           { blankLine: 'always', prev: 'if', next: '*' },
           // ...but not between

@@ -1,6 +1,5 @@
 import {
-  apiClient,
-  // apiClient,
+  constructEndpoint,
   type ApiClient,
   type ClientRequestOptions,
   type ResponseData,
@@ -14,7 +13,7 @@ class UserService {
   async getCurrentUser(requestOptions?: ClientRequestOptions) {
     const { data, response } = await this.client.get<
       ResponseData<UserSuccessData>
-    >('/users/me', requestOptions);
+    >(constructEndpoint('/users/me'), requestOptions);
 
     if (!data || data.status === 'error') {
       throw new Error(data?.error || 'Cannot fetch current user');
@@ -30,7 +29,7 @@ class UserService {
     const { data, response } = await this.client.post<
       ResponseData<UserSuccessData>,
       UserPayload
-    >('/users/me', payload, {
+    >(constructEndpoint('/users/me'), payload, {
       fetchOpts: {
         method: 'PATCH',
         ...(requestOptions?.fetchOpts || {}),
@@ -56,7 +55,7 @@ class UserService {
   async deleteCurrentUser(requestOptions?: ClientRequestOptions) {
     const { data, response } = await this.client.delete<
       ResponseData<UserSuccessData>
-    >('/users/me', {
+    >(constructEndpoint('/users/me'), {
       fetchOpts: {
         ...(requestOptions?.fetchOpts || {}),
       },
@@ -78,6 +77,4 @@ class UserService {
   }
 }
 
-const services = new UserService(apiClient);
-
-export { UserService, services };
+export { UserService };

@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import { forwardRef } from 'react';
 
 import { cn } from '../lib';
 
@@ -17,20 +18,27 @@ const headingVariants = cva('', {
 
 type HeadingTags = `h${1 | 2 | 3 | 4 | 5 | 6}`;
 
-interface HeadingProps extends VariantProps<typeof headingVariants> {
+interface HeadingProps
+  extends VariantProps<typeof headingVariants>,
+    React.HTMLAttributes<HTMLHeadingElement> {
   as?: HeadingTags;
   className?: string;
   children?: React.ReactNode;
 }
 
-function Heading({ as = 'h1', className, children }: HeadingProps) {
+const Heading = forwardRef<HTMLParagraphElement, HeadingProps>(function Heading(
+  { as = 'h1', className, children },
+  ref,
+) {
   const Comp = as;
 
   return (
-    <Comp className={cn(headingVariants({ className, type: as }))}>
+    <Comp ref={ref} className={cn(headingVariants({ className, type: as }))}>
       {children}
     </Comp>
   );
-}
+});
+
+Heading.displayName = 'Heading';
 
 export { Heading, type HeadingProps };

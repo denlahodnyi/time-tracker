@@ -23,57 +23,55 @@ function UserProfileForm() {
   );
 
   return (
-    <fetcher.Form action="/profile" method="POST" className="space-y-2">
+    <fetcher.Form action="/profile" className="space-y-2" method="POST">
       <div>
         <TextField
-          id="firstName"
-          name="firstName"
-          label="First name"
           required
           defaultValue={data?.firstName}
           error={errors.firstName && errors.firstName[0]}
+          id="firstName"
+          label="First name"
+          name="firstName"
         />
       </div>
       <div>
         <TextField
-          id="lastName"
-          name="lastName"
-          label="Last name"
-          required
           defaultValue={data?.lastName || ''}
           error={errors.lastName && errors.lastName[0]}
+          id="lastName"
+          label="Last name"
+          name="lastName"
         />
       </div>
       <div>
         <TextField
-          id="email"
-          name="email"
-          label="Email"
           required
           defaultValue={data?.email || ''}
           error={errors.email && errors.email[0]}
+          id="email"
+          label="Email"
+          name="email"
         />
       </div>
       <div>
         <TextField
-          id="bio"
-          name="bio"
-          label="Bio"
-          required
           defaultValue={data?.bio || ''}
           error={errors.bio && errors.bio[0]}
+          id="bio"
           inputVariant="textarea"
+          label="Bio"
+          name="bio"
         />
       </div>
       <Button
-        type="submit"
-        name="_action"
-        value="updateUser"
-        className="!mt-5"
         aria-disabled={fetcher.state !== 'idle'}
+        className="!mt-5"
         isLoading={fetcher.state !== 'idle'}
         loadingDelay={0}
         loadingMinDuration={1000}
+        name="_action"
+        type="submit"
+        value="updateUser"
       >
         Update
       </Button>

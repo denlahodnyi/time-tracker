@@ -1,6 +1,5 @@
 import { GENERIC_ERROR_MESSAGE } from '~/shared/constants';
 import ClientError from './ClientError';
-import type { Endpoints } from './types';
 import { isSSR } from '../lib';
 
 interface OnAuthErrorCommand {
@@ -26,7 +25,7 @@ const commonFetchOptions: RequestInit = {
 };
 
 class ApiClient {
-  baseUrl: string | null = null;
+  public baseUrl: string | null = null;
 
   constructor(baseUrl: string | null = null) {
     this.baseUrl = baseUrl;
@@ -34,6 +33,10 @@ class ApiClient {
 
   public static getDefaultBaseUrl() {
     return isSSR ? process.env.API_URL : window.ENV.API_URL;
+  }
+
+  protected makeFullEndpoint(path: string) {
+    return (this.baseUrl || ApiClient.getDefaultBaseUrl()) + path;
   }
 
   public handleResponse<TResponseData>(
@@ -67,7 +70,7 @@ class ApiClient {
     return response.json();
   }
 
-  catchError(error: unknown) {
+  public catchError(error: unknown) {
     if (error instanceof ClientError) return error;
 
     return new ClientError(
@@ -77,23 +80,19 @@ class ApiClient {
   }
 
   public async get<TResponseData>(
-    endpoint: Endpoints,
+    path: string,
     requestOptions?: ClientRequestOptions,
   ) {
     try {
       const { fetchOpts, onAuthError } = requestOptions || {};
-
-      const response = await fetch(
-        (this.baseUrl || ApiClient.getDefaultBaseUrl()) + endpoint,
-        {
-          method: 'GET',
-          ...commonFetchOptions,
-          ...(fetchOpts || {}),
-          headers: {
-            ...(fetchOpts?.headers || {}),
-          },
+      const response = await fetch(this.makeFullEndpoint(path), {
+        method: 'GET',
+        ...commonFetchOptions,
+        ...(fetchOpts || {}),
+        headers: {
+          ...(fetchOpts?.headers || {}),
         },
-      );
+      });
 
       const data = await this.handleResponse<TResponseData>(response, {
         onAuthError,
@@ -106,26 +105,23 @@ class ApiClient {
   }
 
   public async post<TResponseData, TBody extends object>(
-    endpoint: Endpoints,
+    path: string,
     body: TBody,
     requestOptions?: ClientRequestOptions,
   ) {
     const { fetchOpts, onAuthError } = requestOptions || {};
 
     try {
-      const response = await fetch(
-        this.baseUrl || ApiClient.getDefaultBaseUrl() + endpoint,
-        {
-          method: 'POST',
-          ...commonFetchOptions,
-          ...(fetchOpts || {}),
-          headers: {
-            'Content-Type': 'application/json',
-            ...(fetchOpts?.headers || {}),
-          },
-          body: JSON.stringify(body),
+      const response = await fetch(this.makeFullEndpoint(path), {
+        method: 'POST',
+        ...commonFetchOptions,
+        ...(fetchOpts || {}),
+        headers: {
+          'Content-Type': 'application/json',
+          ...(fetchOpts?.headers || {}),
         },
-      );
+        body: JSON.stringify(body),
+      });
 
       const data = await this.handleResponse<TResponseData>(response, {
         onAuthError,
@@ -138,24 +134,21 @@ class ApiClient {
   }
 
   public async delete<TResponseData>(
-    endpoint: Endpoints,
+    path: string,
     requestOptions?: ClientRequestOptions,
   ) {
     const { fetchOpts, onAuthError } = requestOptions || {};
 
     try {
-      const response = await fetch(
-        this.baseUrl || ApiClient.getDefaultBaseUrl() + endpoint,
-        {
-          method: 'DELETE',
-          ...commonFetchOptions,
-          ...(fetchOpts || {}),
-          headers: {
-            'Content-Type': 'application/json',
-            ...(fetchOpts?.headers || {}),
-          },
+      const response = await fetch(this.makeFullEndpoint(path), {
+        method: 'DELETE',
+        ...commonFetchOptions,
+        ...(fetchOpts || {}),
+        headers: {
+          'Content-Type': 'application/json',
+          ...(fetchOpts?.headers || {}),
         },
-      );
+      });
       const data = await this.handleResponse<TResponseData>(response, {
         onAuthError,
       });

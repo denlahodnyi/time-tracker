@@ -57,7 +57,7 @@ const InputWithElements = forwardRef<HTMLInputElement, InputWithElementsProps>(
           ref={ref}
           type={type}
           className={cn(
-            'h-inherit flex-1 bg-inherit px-1 py-2 text-inherit placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed',
+            'h-inherit w-full bg-inherit px-1 py-2 text-inherit placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed',
             className,
           )}
           {...restProps}

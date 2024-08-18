@@ -7,9 +7,7 @@ import { buttonVariants } from './button';
 export type AlertDialogProps = AlertDialogPrimitive.AlertDialogProps;
 
 const AlertDialog = AlertDialogPrimitive.Root;
-
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
-
 const AlertDialogPortal = AlertDialogPrimitive.Portal;
 
 const AlertDialogOverlay = forwardRef<
