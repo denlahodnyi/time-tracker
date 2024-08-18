@@ -28,14 +28,14 @@ export default function MainHeader() {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem asChild>
-            <Link to="/profile" className="flex">
-              <User2Icon size={16} className="mr-1" />
+            <Link className="flex" to="/profile">
+              <User2Icon className="mr-1" size={16} />
               Profile
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={logout} className="text-destructive">
-            <LogOutIcon size={16} className="mr-1" /> Logout
+          <DropdownMenuItem className="text-destructive" onSelect={logout}>
+            <LogOutIcon className="mr-1" size={16} /> Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

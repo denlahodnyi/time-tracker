@@ -13,6 +13,7 @@
     "prisma": "pnpm dlx prisma",
     "generate": "pnpm prisma generate",
     "push": "pnpm prisma db push",
+    "format": "pnpm prisma format",
     "migrate:status": "pnpm prisma migrate status",
     "migrate:dev": "pnpm prisma migrate dev"
   },

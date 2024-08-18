@@ -14,14 +14,14 @@ export default abstract class ControllerCreator {
     this.implement = this.implement.bind(this);
   }
 
-  mount(req: Request, res: Response, next: NextFunction) {
+  public mount(req: Request, res: Response, next: NextFunction) {
     this.req = req;
     this.res = res;
     this.next = next;
     asyncHandler(this.implement)(req, res, next);
   }
 
-  abstract implement(): Promise<void>;
+  protected abstract implement(): Promise<void>;
 
   protected ok(data: null | object = null) {
     this.res.status(200).json(createSuccessResponse({ data }));

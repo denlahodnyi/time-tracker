@@ -42,37 +42,37 @@ export default function LoginPage() {
     <div className="grid min-h-screen place-content-center">
       <div className="w-64">
         <Heading className="mb-5 text-center">Sign In</Heading>
-        <fetcher.Form method="post" className="space-y-3">
+        <fetcher.Form className="space-y-3" method="post">
           <div>
             <TextField
-              label="Email"
               required
+              error={errors.email && errors.email[0]}
+              label="Email"
               name="email"
               type="email"
-              error={errors.email && errors.email[0]}
             />
           </div>
           <div>
             <TextField
+              required
+              error={errors.password && errors.password[0]}
               inputVariant="password"
               label="Password"
-              required
               name="password"
-              error={errors.password && errors.password[0]}
             />
           </div>
           <Button
-            type="submit"
+            aria-disabled={fetcher.state !== 'idle'}
             className="mx-auto"
             isLoading={fetcher.state !== 'idle'}
-            aria-disabled={fetcher.state !== 'idle'}
+            type="submit"
           >
             Login
           </Button>
         </fetcher.Form>
         <div className="mt-4 border-t border-slate-300 pt-2 text-center">
           <p>Doesn&apos;t have an account yet?</p>
-          <Button variant="link" asChild>
+          <Button asChild variant="link">
             <Link to="/signup">Sign up</Link>
           </Button>
         </div>

@@ -1,8 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { apiClient } from '~/shared/api';
 import queries from './queries';
-import { services } from './services';
+import { UserService } from './services';
 import useLogout from './useLogout';
+
+const services = new UserService(apiClient);
 
 export default function useCurrentUser() {
   const { logout, isProcessing: isLogoutInProcess } = useLogout();

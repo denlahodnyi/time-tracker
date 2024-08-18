@@ -1,4 +1,4 @@
-import User from './User.js';
+import UserModel from './UserModel.js';
 import { MockContext, userFactory } from '../tests/helpers/index.js';
 import { excludeObjectKeys } from '../utils/index.js';
 
@@ -19,7 +19,7 @@ describe('User model', () => {
     it('returns user without password and token', async () => {
       ctx.mockContext.client.user.create.mockResolvedValue(dummyUser);
 
-      const result = await new User(ctx.context.client.user).signUp({
+      const result = await new UserModel(ctx.context.client).signUp({
         firstName: dummyUser.firstName,
         email: dummyUser.email,
         password: dummyUser.password,
@@ -38,7 +38,7 @@ describe('User model', () => {
     it('returns user without password and token', async () => {
       ctx.mockContext.client.user.findUnique.mockResolvedValue(dummyUser);
 
-      const result = await new User(ctx.context.client.user).signIn({
+      const result = await new UserModel(ctx.context.client).signIn({
         email: dummyUser.email,
         password: dummyUser.password,
       });
@@ -57,7 +57,7 @@ describe('User model', () => {
       ctx.mockContext.client.user.update.mockResolvedValue(dummyUser);
 
       await expect(
-        new User(ctx.context.client.user).updateById(dummyUser),
+        new UserModel(ctx.context.client).updateById(dummyUser),
       ).resolves.toStrictEqual(excludeObjectKeys(dummyUser, ['password']));
     });
   });

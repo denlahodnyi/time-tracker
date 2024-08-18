@@ -8,8 +8,8 @@ export interface ApiErrorConfig {
 }
 
 export default class ApiError extends Error {
-  code: number;
-  formFields: CustomFormErrors | null;
+  public code: number;
+  public formFields: CustomFormErrors | null;
   constructor(config: ApiErrorConfig) {
     super(config.message);
     this.code = config?.code || 500;

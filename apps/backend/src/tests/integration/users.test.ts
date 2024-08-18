@@ -17,7 +17,7 @@ afterEach(async () => {
 });
 
 describe('/users', () => {
-  describe('[GET] /users/:user_id', () => {
+  describe('[GET] /users/:userId', () => {
     it('returns 200 status code and success status for authorized user', async () => {
       const { agent, createdUser } = await httpCtx.getAuthAgent();
       const { body, status } = await agent.get(`/api/users/${createdUser.id}`);
@@ -66,7 +66,7 @@ describe('/users', () => {
     });
   });
 
-  describe('[PATCH] /users/:user_id', () => {
+  describe('[PATCH] /users/:userId', () => {
     it('returns 200 status code and success status for authorized user', async () => {
       const { agent, createdUser } = await httpCtx.getAuthAgent();
       const { body, status } = await agent
@@ -177,9 +177,50 @@ describe('/users', () => {
       expect(status).toBe(400);
       getErrorResponseExpects(body, true);
     });
+
+    it('returns 400 status code if falsy required fields are provided', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const { body: body1, status: st1 } = await agent
+        .patch(`/api/users/${createdUser.id}`)
+        .send({
+          firstName: '',
+        });
+
+      expect(st1).toBe(400);
+      getErrorResponseExpects(body1, true);
+
+      const { body: body2, status: st2 } = await agent
+        .patch(`/api/users/${createdUser.id}`)
+        .send({
+          firstName: null,
+        });
+
+      expect(st2).toBe(400);
+      getErrorResponseExpects(body2, true);
+
+      const { body: body3, status: st3 } = await agent
+        .patch(`/api/users/${createdUser.id}`)
+        .send({
+          email: '',
+        });
+
+      expect(st3).toBe(400);
+      getErrorResponseExpects(body3, true);
+
+      const { body: body4, status: st4 } = await agent
+        .patch(`/api/users/${createdUser.id}`)
+        .send({
+          email: null,
+        });
+
+      expect(st4).toBe(400);
+      getErrorResponseExpects(body4, true);
+    });
   });
 
-  describe('[DELETE] /users/:user_id', () => {
+  describe('[DELETE] /users/:userId', () => {
     it('returns 200 status code and success status for authorized user', async () => {
       const { agent, createdUser } = await httpCtx.getAuthAgent();
       const { body, status } = await agent.delete(

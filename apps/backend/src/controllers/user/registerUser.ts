@@ -1,11 +1,11 @@
 import { client } from '../../../db/client.js';
-import { User } from '../../models/index.js';
+import { UserModel } from '../../models/index.js';
 import { ControllerCreator, setAuthCookie } from '../../core/helpers/index.js';
 
 class RegisterUserController extends ControllerCreator {
   async implement(): Promise<void> {
     const { firstName, email, password } = this.req.body;
-    const { token, ...data } = await new User(client.user).signUp({
+    const { token, ...data } = await new UserModel(client).signUp({
       firstName,
       email,
       password,

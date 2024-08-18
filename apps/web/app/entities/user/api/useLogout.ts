@@ -4,6 +4,8 @@ import { useCallback } from 'react';
 
 const FETCHER_KEY = 'logout-fetcher';
 
+// TODO: seems like it should go to shared
+
 export default function useLogout() {
   const queryClient = useQueryClient();
   const navigation = useNavigation();
@@ -12,13 +14,19 @@ export default function useLogout() {
   const idle = logoutFetcher.state === 'idle';
   const isProcessing = !idle || nextPathname === '/login';
 
-  const logout = useCallback(() => {
-    queryClient.clear();
-    logoutFetcher.submit(
-      { _action: 'logout' },
-      { action: '/', method: 'POST' },
-    );
-  }, [logoutFetcher, queryClient]);
+  const logout = useCallback(
+    function logoutCallback() {
+      logoutFetcher.submit(
+        { _action: 'logout' },
+        { action: '/', method: 'POST' },
+      );
+
+      setTimeout(function logoutQueryClear() {
+        queryClient.clear();
+      }, 200);
+    },
+    [logoutFetcher, queryClient],
+  );
 
   return {
     logout,

@@ -74,9 +74,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
+        data-loading={loading}
         {...props}
-        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        className={cn(buttonVariants({ variant, size, className }))}
         onClick={(e) => {
           if (preventClickOnLoading && loading) {
             e.preventDefault();

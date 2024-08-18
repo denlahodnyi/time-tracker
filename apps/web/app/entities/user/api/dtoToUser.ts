@@ -11,3 +11,15 @@ export default function dtoToUser(dto: UserDTO): UserBase {
     bio: dto.bio || '',
   };
 }
+
+// export function userToDto(
+//   user: Omit<UserBase, 'id'>,
+// ): Omit<UserDTO, 'createdAt' | 'updatedAt'> {
+//   return {
+//     firstName: user.firstName,
+//     email: user.email,
+//     lastName: user.lastName || null,
+//     bio: user.bio || null,
+//     avatarUrl: null,
+//   };
+// }

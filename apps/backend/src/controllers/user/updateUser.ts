@@ -1,10 +1,10 @@
 import { client } from '../../../db/index.js';
 import { UserControllerCreator } from '../../core/helpers/index.js';
-import { User } from '../../models/index.js';
+import { UserModel } from '../../models/index.js';
 
 class UpdateUserController extends UserControllerCreator {
   async implement(): Promise<void> {
-    const user = await new User(client.user).updateById({
+    const user = await new UserModel(client).updateById({
       id: this.getUserId(),
       ...this.req.body,
     });

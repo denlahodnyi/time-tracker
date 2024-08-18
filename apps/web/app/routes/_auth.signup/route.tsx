@@ -43,8 +43,8 @@ export default function SignUpPage() {
       <div className="w-64">
         <Heading className="mb-5 text-center">Sign Up</Heading>
         <fetcher.Form
-          method="post"
           className="space-y-3"
+          method="post"
           onSubmit={(e) => {
             const data = Object.fromEntries(new FormData(e.currentTarget));
 
@@ -63,48 +63,48 @@ export default function SignUpPage() {
         >
           <div>
             <TextField
-              label="First name"
               required
-              name="firstName"
               error={errors.firstName && errors.firstName[0]}
+              label="First name"
+              name="firstName"
             />
           </div>
           <div>
             <TextField
-              label="Email"
               required
+              error={errors.email && errors.email[0]}
+              label="Email"
               name="email"
               type="email"
-              error={errors.email && errors.email[0]}
             />
           </div>
           <div>
             <TextField
+              required
+              error={errors.password && errors.password[0]}
               inputVariant="password"
               label="Password"
-              required
               name="password"
-              error={errors.password && errors.password[0]}
             />
           </div>
           <div>
             <TextField
               ref={confirmedPasswordInputRef}
+              required
+              error={errors.confirmedPassword && errors.confirmedPassword[0]}
               inputVariant="password"
               label="Repeat password"
-              required
               name="confirmedPassword"
-              error={errors.confirmedPassword && errors.confirmedPassword[0]}
               onChange={(e) => {
                 e.currentTarget.setCustomValidity('');
               }}
             />
           </div>
           <Button
-            type="submit"
+            aria-disabled={fetcher.state !== 'idle'}
             className="mx-auto"
             isLoading={fetcher.state !== 'idle'}
-            aria-disabled={fetcher.state !== 'idle'}
+            type="submit"
           >
             Register
           </Button>

@@ -12,6 +12,8 @@ type ActionFormData =
   | { _action: 'deleteUser' };
 
 export default async function action({ request }: ActionFunctionArgs) {
+  // TODO: missed auth check
+
   try {
     const formData = (await parseRequestFormData(
       request,

@@ -1,5 +1,6 @@
 import type { User } from '@libs/prisma';
 import { Factory } from 'fishery';
+import invariant from 'tiny-invariant';
 
 import { type Client } from '../../../db/client.js';
 import { hashPassword } from '../../utils/password.js';
@@ -11,11 +12,11 @@ interface UserTransientParams {
 const userFactory = Factory.define<User, UserTransientParams>(
   ({ params, sequence, transientParams, onCreate }) => {
     onCreate(async () => {
-      if (!transientParams.client) {
-        throw new Error('User factory error: client not found');
-      }
+      const { client } = transientParams;
 
-      return transientParams.client.user.create({
+      invariant(client, 'User factory error: client not found');
+
+      return client.user.create({
         data: {
           firstName: params.firstName || 'John',
           lastName: params.lastName || 'Doe',
