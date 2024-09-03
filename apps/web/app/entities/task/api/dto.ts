@@ -11,7 +11,7 @@ import type {
   MyTaskCreatePayload,
   MyTaskUpdatePayload,
   TaskBase,
-} from '../types';
+} from '../model';
 
 // function transformDtoStatus(status: UserTaskDTO['status']): TaskBase['status'] {
 //   if (status === 'IDLE') return 'idle';

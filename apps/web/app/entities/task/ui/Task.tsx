@@ -13,13 +13,14 @@ export interface TimeSpentProps {
   totalTimeSpent: number;
 }
 
-export interface StartButtonProps extends ButtonProps {
+export interface ProgressButtonProps extends ButtonProps {
   isInProgress: boolean;
   isLoading?: boolean;
 }
 
 interface TaskTimerProps extends React.HTMLAttributes<HTMLParagraphElement> {
   startDate?: Date;
+  totalTimeSpent: number;
 }
 
 function TaskCard({ children, className, ...props }: TaskCardProps) {
@@ -41,34 +42,44 @@ function TimeSpent({ totalTimeSpent, ...props }: TimeSpentProps) {
   return <p {...props}>{taskLib.formatTotalTimeSpent(totalTimeSpent)}</p>;
 }
 
-function TaskTimer({ startDate, ...props }: TaskTimerProps) {
+const calcSpentTime = (start: Date, msSpent: number) => {
+  const {
+    hours = 0,
+    minutes = 0,
+    seconds = 0,
+  } = msToDuration(Date.now() - (start.getTime() - msSpent));
+
+  const hoursStr = hours >= 10 ? hours : `0${hours}`;
+  const minutesStr = minutes >= 10 ? minutes : `0${minutes}`;
+  const secondsStr = seconds >= 10 ? seconds : `0${seconds}`;
+
+  return `${hoursStr}:${minutesStr}:${secondsStr}`;
+};
+
+function TaskTimer({ startDate, totalTimeSpent, ...props }: TaskTimerProps) {
   const [start] = useState(() => startDate ?? new Date());
-  const [timer, setTimer] = useState('00:00:00');
+  const [timer, setTimer] = useState(() =>
+    calcSpentTime(start, totalTimeSpent),
+  );
 
   useEffect(() => {
     const timerId = setInterval(() => {
-      const {
-        hours = 0,
-        minutes = 0,
-        seconds = 0,
-      } = msToDuration(Date.now() - start.getTime());
-
-      const hoursStr = hours >= 10 ? hours : `0${hours}`;
-      const minutesStr = minutes >= 10 ? minutes : `0${minutes}`;
-      const secondsStr = seconds >= 10 ? seconds : `0${seconds}`;
-
-      setTimer(`${hoursStr}:${minutesStr}:${secondsStr}`);
+      setTimer(calcSpentTime(start, totalTimeSpent));
     }, 1000);
 
     return () => {
       clearInterval(timerId);
     };
-  }, [start]);
+  }, [start, totalTimeSpent]);
 
   return <p {...props}>{timer}</p>;
 }
 
-function StartButton({ isLoading, isInProgress, ...props }: StartButtonProps) {
+function MainAction({
+  isLoading,
+  isInProgress,
+  ...props
+}: ProgressButtonProps) {
   return (
     <Button
       aria-disabled={isLoading}
@@ -96,4 +107,4 @@ function StartButton({ isLoading, isInProgress, ...props }: StartButtonProps) {
   );
 }
 
-export { StartButton, TaskCard, TimeSpent, TaskTimer };
+export { MainAction, TaskCard, TimeSpent, TaskTimer };

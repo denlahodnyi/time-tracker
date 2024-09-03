@@ -3,7 +3,9 @@ import { UserModel } from '../../models/index.js';
 import { ControllerCreator, setAuthCookie } from '../../core/helpers/index.js';
 
 class RegisterUserController extends ControllerCreator {
-  async implement(): Promise<void> {
+  protected async implement(
+    this: ReturnType<ControllerCreator['createHttpCtx']>,
+  ): Promise<void> {
     const { firstName, email, password } = this.req.body;
     const { token, ...data } = await new UserModel(client).signUp({
       firstName,

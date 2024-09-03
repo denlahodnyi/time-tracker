@@ -5,7 +5,9 @@ import { ControllerCreator } from '../../core/helpers/index.js';
 const LIMIT = 10;
 
 class GetUserTasks extends ControllerCreator {
-  async implement(): Promise<void> {
+  protected async implement(
+    this: ReturnType<ControllerCreator['createHttpCtx']>,
+  ): Promise<void> {
     const { cursor, limit } = this.req.query;
     const { tasks, pagination, activeTask } = await new TaskModel(
       client,

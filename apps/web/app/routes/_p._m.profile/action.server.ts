@@ -1,23 +1,23 @@
-import { json, redirect, type ActionFunctionArgs } from '@remix-run/node';
+import { json, type ActionFunctionArgs } from '@remix-run/node';
 
 import { userApi, type UserPayload } from '~/entities/user';
+import { logout } from '~/shared/api/server';
+import { getCookie, getSetCookie, parseRequestFormData } from '~/shared/lib';
 import {
-  getNullifiedAuthCookie,
-  handleCatchResponseError,
-  parseRequestFormData,
-} from '~/shared/server-side';
+  handleRequestError,
+  requireAuthRequest,
+} from '~/shared/lib/server-only';
 
 type ActionFormData =
   | (UserPayload & { _action: 'updateUser' })
   | { _action: 'deleteUser' };
 
 export default async function action({ request }: ActionFunctionArgs) {
-  // TODO: missed auth check
+  requireAuthRequest(request);
 
   try {
-    const formData = (await parseRequestFormData(
-      request,
-    )) as unknown as ActionFormData;
+    const formData = await parseRequestFormData<ActionFormData>(request);
+    const cookie = getCookie(request);
 
     if (formData._action === 'updateUser') {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,35 +26,31 @@ export default async function action({ request }: ActionFunctionArgs) {
         payload,
         {
           fetchOpts: {
-            headers: { Cookie: request.headers.get('Cookie') || '' },
+            headers: { Cookie: cookie },
           },
         },
       );
 
       return json(result, {
         headers: {
-          'Set-Cookie': response.headers.get('Set-Cookie') || '',
+          'Set-Cookie': getSetCookie(response),
         },
       });
     } else if (formData._action === 'deleteUser') {
       const { result, response } = await userApi.services.deleteCurrentUser({
         fetchOpts: {
-          headers: { Cookie: request.headers.get('Cookie') || '' },
+          headers: { Cookie: cookie },
         },
       });
 
       if (result.data) {
-        return redirect('/login', {
-          headers: {
-            'Set-Cookie': getNullifiedAuthCookie(),
-          },
-        });
+        logout(request);
       } else {
         return json(
           { data: null, error: result.error, errors: result.errors },
           {
             headers: {
-              'Set-Cookie': response.headers.get('Set-Cookie') || '',
+              'Set-Cookie': getSetCookie(response),
             },
           },
         );
@@ -63,6 +59,6 @@ export default async function action({ request }: ActionFunctionArgs) {
 
     return null;
   } catch (err) {
-    return handleCatchResponseError(err);
+    return handleRequestError(err, request);
   }
 }

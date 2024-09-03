@@ -166,6 +166,10 @@ module.exports = {
             prefix: ['T'],
           },
         ],
+        '@typescript-eslint/no-empty-object-type': [
+          2,
+          { allowInterfaces: 'with-single-extends' },
+        ],
       },
     },
 

@@ -6,9 +6,11 @@ import {
 } from '../../core/helpers/index.js';
 
 class GetUserByIdController extends UserControllerCreator {
-  async implement(): Promise<void> {
+  protected async implement(
+    this: this & ReturnType<UserControllerCreator['createHttpCtx']>,
+  ): Promise<void> {
     const user = await client.user.findUnique({
-      where: { id: this.getUserId() },
+      where: { id: this.getUserId(this.req) },
     });
 
     if (!user) {

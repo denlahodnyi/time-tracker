@@ -1,8 +1,6 @@
 import { Link, useFetcher, useLocation, useNavigate } from '@remix-run/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { userApi } from '~/entities/user';
 import { useFormErrors } from '~/shared/lib';
 import { Button, Heading, useErrorAlert, TextField } from '~/shared/ui';
 import action from './action.server';
@@ -10,7 +8,6 @@ import action from './action.server';
 export { action };
 
 export default function LoginPage() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const fetcher = useFetcher<typeof action>();
@@ -30,10 +27,6 @@ export default function LoginPage() {
       const nextHash = searchParams.get('nextHash');
       const hash = nextHash ? `#${nextHash}` : '';
 
-      queryClient.setQueryData(
-        userApi.queries.users.me.queryKey,
-        actionData.data.user,
-      );
       navigate(nextPath ? `${nextPath}${hash}` : '/', { replace: true });
     }
   }, [actionData?.data?.user]);

@@ -1,2 +1,2 @@
 export * as userApi from './api';
-export * from './types';
+export * from './model';

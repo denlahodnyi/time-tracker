@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { Outlet, redirect } from '@remix-run/react';
 
-import { parseRequestCookies } from '~/shared/server-side';
+import { parseRequestCookies } from '~/shared/lib/server-only';
 
 export function shouldRevalidate() {
   return false;

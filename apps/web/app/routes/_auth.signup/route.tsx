@@ -1,8 +1,6 @@
 import { useFetcher, useNavigate } from '@remix-run/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 
-import { userApi } from '~/entities/user';
 import { useFormErrors } from '~/shared/lib';
 import { Button, Heading, TextField, useErrorAlert } from '~/shared/ui';
 import action from './action.server';
@@ -10,7 +8,6 @@ import action from './action.server';
 export { action };
 
 export default function SignUpPage() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const fetcher = useFetcher<typeof action>();
   const actionData = fetcher.data;
@@ -30,10 +27,6 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (actionData?.data?.user) {
-      queryClient.setQueryData(
-        userApi.queries.users.me.queryKey,
-        actionData.data.user,
-      );
       navigate('/', { replace: true });
     }
   }, [actionData?.data?.user]);
@@ -55,7 +48,6 @@ export default function SignUpPage() {
               confirmedPasswordInputRef.current?.reportValidity();
 
               e.preventDefault();
-              // return;
             } else {
               fetcher.submit(e.currentTarget);
             }

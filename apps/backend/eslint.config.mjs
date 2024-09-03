@@ -109,6 +109,12 @@ export default tseslint.config(
   {
     files: ['**/*.ts'],
     rules: {
+      '@typescript-eslint/no-explicit-any': [
+        2,
+        {
+          ignoreRestArgs: true,
+        },
+      ],
       '@typescript-eslint/consistent-type-imports': [
         2,
         {
