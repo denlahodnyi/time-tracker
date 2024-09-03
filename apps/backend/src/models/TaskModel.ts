@@ -186,6 +186,13 @@ export default class Task extends ModelBase {
       tasks = await Promise.all(tasksPromises);
     }
 
+    if (active) {
+      active.totalTimeSpent = await this.client.task.getTotalTimeSpent(
+        userId,
+        active.id,
+      );
+    }
+
     return {
       tasks,
       activeTask,

@@ -28,9 +28,6 @@ model Task {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(100)
   description String?       @default("") @db.VarChar(255)
-  // startedAt   DateTime?     @map("started_at") @db.Timestamptz()
-  // finishedAt  DateTime?     @map("finished_at") @db.Timestamptz()
-  // status      TaskStatus  @default(IDLE)
   users       UserTasks[]
   timeEntries TimeEntries[]
   createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz()
@@ -38,12 +35,6 @@ model Task {
 
   @@map("tasks")
 }
-
-// enum TaskStatus {
-//   IDLE
-//   IN_PROGRESS
-//   DONE
-// }
 
 model UserTasks {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)

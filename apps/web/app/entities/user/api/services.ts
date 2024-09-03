@@ -4,8 +4,8 @@ import {
   type ClientRequestOptions,
   type ResponseData,
 } from '~/shared/api';
-import dtoToUser from './dtoToUser';
-import type { UserPayload, UserSuccessData } from '../types';
+import { dtoToUser } from './dto';
+import type { UserPayload, UserSuccessData } from '../model';
 
 class UserService {
   constructor(private client: ApiClient) {}

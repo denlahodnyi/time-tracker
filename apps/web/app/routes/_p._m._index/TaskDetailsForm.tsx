@@ -1,6 +1,5 @@
-import { useFetcher } from '@remix-run/react';
-
-import { useFormErrors } from '~/shared/lib';
+import { UPDATE_TASK_ACTION } from '~/features/tasks/update-task';
+import { useEnhancedFetcher, useFormErrors } from '~/shared/lib';
 import { Button, TextField } from '~/shared/ui';
 import type action from './action.server';
 
@@ -16,14 +15,19 @@ interface TaskDetailsFormProps {
 
 function TaskDetailsForm(props: TaskDetailsFormProps) {
   const { defaultValues, onCancel, onUpdated, taskId } = props;
-  const fetcher = useFetcher<typeof action>();
+  const fetcher = useEnhancedFetcher<typeof action>({
+    key: UPDATE_TASK_ACTION,
+    checkSuccess: (data) => Boolean(data.data?.task),
+    onSuccess: () => {
+      onUpdated();
+    },
+  });
   const fetcherData = fetcher.data;
   const isLoading = fetcher.state !== 'idle';
   const errors = useFormErrors(fetcherData?.errors, ['name', 'description']);
 
   return (
     <fetcher.Form
-      action="/?index"
       className="space-y-2"
       method="post"
       onSubmit={(e) => {
@@ -56,7 +60,7 @@ function TaskDetailsForm(props: TaskDetailsFormProps) {
           isLoading={isLoading}
           name="_action"
           type="submit"
-          value="updateTask"
+          value={UPDATE_TASK_ACTION}
         >
           Save
         </Button>

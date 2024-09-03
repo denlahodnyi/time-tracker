@@ -3,9 +3,11 @@ import { UserControllerCreator } from '../../core/helpers/index.js';
 import { UserModel } from '../../models/index.js';
 
 class UpdateUserController extends UserControllerCreator {
-  async implement(): Promise<void> {
+  protected async implement(
+    this: this & ReturnType<UserControllerCreator['createHttpCtx']>,
+  ): Promise<void> {
     const user = await new UserModel(client).updateById({
-      id: this.getUserId(),
+      id: this.getUserId(this.req),
       ...this.req.body,
     });
 

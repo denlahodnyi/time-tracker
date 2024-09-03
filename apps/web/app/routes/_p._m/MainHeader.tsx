@@ -1,25 +1,41 @@
-import { Link } from '@remix-run/react';
-import { LogOutIcon, User2Icon } from 'lucide-react';
+import { Link, useLocation, useRouteLoaderData } from '@remix-run/react';
+import { HouseIcon, LogOutIcon, User2Icon } from 'lucide-react';
 
-import { userApi } from '~/entities/user';
+import { useLogout } from '~/shared/api';
 import {
   Avatar,
   AvatarFallback,
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/shared/ui';
+import type loader from '../_p/loader.server';
 
 export default function MainHeader() {
-  const { logout } = userApi.useLogout();
-  const { data: user } = userApi.useCurrentUser();
-  const { firstName = '', lastName = '' } = user || {};
+  const { logout } = useLogout();
+  const location = useLocation();
+
+  const protectedLoaderData = useRouteLoaderData<typeof loader>('routes/_p');
+  const { firstName = '', lastName = '' } = protectedLoaderData?.user || {};
   const avatarFallback = `${firstName.at(0)}${lastName?.at(0) || ''}`;
 
   return (
     <header className="sticky top-0 flex border border-b-ring bg-background px-5 py-2">
+      {location.pathname !== '/' && (
+        <Button
+          asChild
+          aria-label="Go home"
+          className="h-10 w-10 rounded-full p-0"
+          variant="ghost"
+        >
+          <Link to="/">
+            <HouseIcon className="h-6 w-6" />
+          </Link>
+        </Button>
+      )}
       <DropdownMenu>
         <DropdownMenuTrigger className="ml-auto mr-0">
           <Avatar className="border border-border">

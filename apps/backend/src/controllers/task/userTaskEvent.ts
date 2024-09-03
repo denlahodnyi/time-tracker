@@ -17,7 +17,9 @@ type EventBody =
     };
 
 class UserTaskEvent extends ControllerCreator {
-  async implement(): Promise<void> {
+  protected async implement(
+    this: ReturnType<ControllerCreator['createHttpCtx']>,
+  ): Promise<void> {
     const body = this.req.body as EventBody;
 
     if (body.event === 'start') {

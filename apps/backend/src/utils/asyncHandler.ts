@@ -1,6 +1,8 @@
 import type { RequestHandler, Response, Request, NextFunction } from 'express';
 
-type AsyncHandlerFn = (...params: Parameters<RequestHandler>) => Promise<void>;
+type AsyncHandlerFn = (
+  ...params: Parameters<RequestHandler>
+) => Promise<unknown>;
 
 const asyncHandler =
   (controller: AsyncHandlerFn) =>

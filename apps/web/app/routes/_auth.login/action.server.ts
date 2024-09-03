@@ -2,16 +2,14 @@ import type { ActionFunctionArgs } from '@remix-run/node';
 
 import type { LoginPayload, LoginReturn } from '~/entities/user';
 import { apiClient, type ResponseData } from '~/shared/api';
+import { parseRequestFormData } from '~/shared/lib';
 import {
-  handleCatchResponseError,
+  handleRequestError,
   handleResponseData,
-  parseRequestFormData,
-} from '~/shared/server-side';
+} from '~/shared/lib/server-only';
 
 export default async function action({ request }: ActionFunctionArgs) {
-  const payload = (await parseRequestFormData(
-    request,
-  )) as unknown as LoginPayload;
+  const payload = await parseRequestFormData<LoginPayload>(request);
 
   try {
     const { data, response } = await apiClient.post<
@@ -19,8 +17,10 @@ export default async function action({ request }: ActionFunctionArgs) {
       LoginPayload
     >('/signin', payload);
 
+    if (!data) throw new Error('Empty signin data');
+
     return handleResponseData<LoginReturn>(data, response);
   } catch (err) {
-    return handleCatchResponseError(err);
+    return handleRequestError(err, request);
   }
 }

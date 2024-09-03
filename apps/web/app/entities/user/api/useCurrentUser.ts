@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '~/shared/api';
 import queries from './queries';
 import { UserService } from './services';
-import useLogout from './useLogout';
+import useLogout from '../../../shared/api/useLogout';
 
 const services = new UserService(apiClient);
 

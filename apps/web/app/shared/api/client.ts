@@ -1,5 +1,5 @@
 import { GENERIC_ERROR_MESSAGE } from '~/shared/constants';
-import ClientError from './ClientError';
+import ClientError from './lib/ClientError';
 import { isSSR } from '../lib';
 
 interface OnAuthErrorCommand {

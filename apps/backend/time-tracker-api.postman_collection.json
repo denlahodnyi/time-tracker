@@ -27,8 +27,53 @@
 					"response": []
 				},
 				{
+					"name": "Get user by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/users/:userId",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/users/me",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Register user",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -62,11 +107,11 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
-									"pm.test(\"Token presence\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.data.token).to.exist;",
-									"    if (jsonData.data.token) pm.environment.set(\"AUTH_TOKEN\", jsonData.data.token);",
-									"});"
+									"// pm.test(\"Token presence\", function () {",
+									"//     var jsonData = pm.response.json();",
+									"//     pm.expect(jsonData.data.token).to.exist;",
+									"//     if (jsonData.data.token) pm.environment.set(\"AUTH_TOKEN\", jsonData.data.token);",
+									"// });"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -75,14 +120,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [
@@ -93,7 +131,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"jack@g.com\",\n    \"password\": \"12345\"\n}"
+							"raw": "{\n    \"email\": \"den@g.com\",\n    \"password\": \"12345\"\n}"
 						},
 						"url": {
 							"raw": "{{URI}}/signin",
@@ -108,52 +146,8 @@
 					"response": []
 				},
 				{
-					"name": "Get user by id",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URI}}/users/:user_id",
-							"host": [
-								"{{URI}}"
-							],
-							"path": [
-								"users",
-								":user_id"
-							],
-							"variable": [
-								{
-									"key": "user_id",
-									"value": "4"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Update user",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PATCH",
 						"header": [
 							{
@@ -166,18 +160,18 @@
 							"raw": "{\n    \"bio\": \"Lorem ipsum dolor sit amet\"\n}"
 						},
 						"url": {
-							"raw": "{{URI}}/users/:user_id",
+							"raw": "{{URI}}/users/:userId",
 							"host": [
 								"{{URI}}"
 							],
 							"path": [
 								"users",
-								":user_id"
+								":userId"
 							],
 							"variable": [
 								{
-									"key": "user_id",
-									"value": "5"
+									"key": "userId",
+									"value": ""
 								}
 							]
 						}
@@ -187,31 +181,250 @@
 				{
 					"name": "Delete user",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URI}}/users/:user_id",
+							"raw": "{{URI}}/users/:userId",
 							"host": [
 								"{{URI}}"
 							],
 							"path": [
 								"users",
-								":user_id"
+								":userId"
 							],
 							"variable": [
 								{
-									"key": "user_id",
-									"value": "2"
+									"key": "userId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tasks",
+			"item": [
+				{
+					"name": "Create user task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomLoremWords}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"startedAt\": \"{{$isoTimestamp}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URI}}/tasks",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/tasks",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "cursor",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user task by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/tasks/:taskId",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user task entries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/tasks/:taskId/entries",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks",
+								":taskId",
+								"entries"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete users task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/tasks/:taskId",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user task",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"${$randomLoremWords}\",\n    \"description\": \"${$randomLoremSentence}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URI}}/tasks/:taskId",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Task event (start)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event\": \"start\",\n    \"startedAt\": \"{{$isoTimestamp}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URI}}/tasks/:taskId/event",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks",
+								":taskId",
+								"event"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Task event (stop)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event\": \"stop\",\n    \"finishedAt\": \"{{$isoTimestamp}}\",\n    \"entryId\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URI}}/tasks/:taskId/event",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks",
+								":taskId",
+								"event"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": ""
 								}
 							]
 						}

@@ -24,7 +24,7 @@ import type {
   MyTaskSuccessUpdateReturn,
   MyTaskUpdatePayload,
   MyTasksSuccessGetReturn,
-} from '../types';
+} from '../model';
 
 class TaskService {
   constructor(private client: ApiClient) {}
@@ -44,11 +44,13 @@ class TaskService {
     if (data.status === 'error') throw new Error(data.error);
 
     return {
-      tasks: userTasksFromDto(data.data.tasks),
-      activeTask: data.data.activeTask
-        ? userTaskFromDto(data.data.activeTask)
-        : null,
-      pagination: data.data.pagination,
+      result: {
+        tasks: userTasksFromDto(data.data.tasks),
+        activeTask: data.data.activeTask
+          ? userTaskFromDto(data.data.activeTask)
+          : null,
+        pagination: data.data.pagination,
+      },
       response,
     };
   }

@@ -2,17 +2,14 @@ import { json, type ActionFunctionArgs } from '@remix-run/node';
 
 import type { SignUpPayload, SignUpReturn } from '~/entities/user';
 import { apiClient, type FormErrors, type ResponseData } from '~/shared/api';
-import { excludeObjectKeys } from '~/shared/lib';
+import { excludeObjectKeys, parseRequestFormData } from '~/shared/lib';
 import {
-  handleCatchResponseError,
+  handleRequestError,
   handleResponseData,
-  parseRequestFormData,
-} from '~/shared/server-side';
+} from '~/shared/lib/server-only';
 
 export default async function action({ request }: ActionFunctionArgs) {
-  const payload = (await parseRequestFormData(
-    request,
-  )) as unknown as SignUpPayload;
+  const payload = await parseRequestFormData<SignUpPayload>(request);
 
   if (payload.confirmedPassword !== payload.password) {
     return json({
@@ -32,8 +29,10 @@ export default async function action({ request }: ActionFunctionArgs) {
       Omit<SignUpPayload, 'confirmedPassword'>
     >('/signup', excludeObjectKeys(payload, ['confirmedPassword']));
 
+    if (!data) throw new Error('Empty signup data');
+
     return handleResponseData<SignUpReturn>(data, response);
   } catch (err) {
-    return handleCatchResponseError(err);
+    return handleRequestError(err, request);
   }
 }

@@ -1,14 +1,15 @@
-import { useFetcher } from '@remix-run/react';
+import { useFetcher, useRouteLoaderData } from '@remix-run/react';
 
-import { userApi } from '~/entities/user';
 import { useFormErrors } from '~/shared/lib';
 import { Button, TextField, useSuccessAlert } from '~/shared/ui';
 import action from './action.server';
+import type loader from '../_p/loader.server';
 
 function UserProfileForm() {
   const fetcher = useFetcher<typeof action>();
   const formErrors = fetcher.data?.errors;
-  const { data } = userApi.useCurrentUser();
+  const protectedLoaderData = useRouteLoaderData<typeof loader>('routes/_p');
+  const { user } = protectedLoaderData || {};
   const errors = useFormErrors(formErrors, [
     'firstName',
     'lastName',
@@ -27,7 +28,7 @@ function UserProfileForm() {
       <div>
         <TextField
           required
-          defaultValue={data?.firstName}
+          defaultValue={user?.firstName}
           error={errors.firstName && errors.firstName[0]}
           id="firstName"
           label="First name"
@@ -36,7 +37,7 @@ function UserProfileForm() {
       </div>
       <div>
         <TextField
-          defaultValue={data?.lastName || ''}
+          defaultValue={user?.lastName || ''}
           error={errors.lastName && errors.lastName[0]}
           id="lastName"
           label="Last name"
@@ -46,7 +47,7 @@ function UserProfileForm() {
       <div>
         <TextField
           required
-          defaultValue={data?.email || ''}
+          defaultValue={user?.email || ''}
           error={errors.email && errors.email[0]}
           id="email"
           label="Email"
@@ -55,7 +56,7 @@ function UserProfileForm() {
       </div>
       <div>
         <TextField
-          defaultValue={data?.bio || ''}
+          defaultValue={user?.bio || ''}
           error={errors.bio && errors.bio[0]}
           id="bio"
           inputVariant="textarea"

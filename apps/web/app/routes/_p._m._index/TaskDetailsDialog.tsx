@@ -1,12 +1,7 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { PenIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import {
-  taskApi,
-  type AllTasksQueryData,
-  type TaskBase,
-} from '~/entities/task';
+import { type TaskBase } from '~/entities/task';
 import {
   Button,
   Dialog,
@@ -19,27 +14,16 @@ import TaskDetailsForm from './TaskDetailsForm';
 interface TaskDetailsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  taskId: TaskBase['id'];
+  task: Pick<TaskBase, 'id' | 'name' | 'description'>;
 }
 
 function TaskDetailsDialog(props: TaskDetailsDialogProps) {
-  const { open, onOpenChange, taskId } = props;
-  const queryClient = useQueryClient();
+  const { open, onOpenChange, task } = props;
   const [isEdit, setIsEdit] = useState(false);
-
-  let task: TaskBase | undefined;
-
-  queryClient
-    .getQueryData<AllTasksQueryData>(taskApi.queries.tasks.myAll.queryKey)
-    ?.pages.find((page) => {
-      task = page.tasks.find((t) => t.id === taskId);
-
-      return !!task;
-    });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent aria-describedby="">
         <DialogHeader>
           <span className="flex flex-row items-baseline gap-3">
             <DialogTitle>Task details</DialogTitle>

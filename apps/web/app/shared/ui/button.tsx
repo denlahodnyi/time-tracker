@@ -1,7 +1,7 @@
 import { Slot, Slottable } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { LoaderPinwheelIcon } from 'lucide-react';
-import * as React from 'react';
+import { forwardRef } from 'react';
 import { useSpinDelay } from 'spin-delay';
 
 import { cn } from '~/shared/lib';
@@ -48,7 +48,7 @@ export interface ButtonProps
   rightElem?: React.ReactNode;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       asChild = false,
