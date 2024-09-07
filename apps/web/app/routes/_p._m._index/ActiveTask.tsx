@@ -6,7 +6,7 @@ import { formatTotalTimeSpent } from '~/entities/task/lib';
 import { START_NEW_TASK_ACTION } from '~/features/tasks/create-task';
 import { STOP_TASK_ACTION } from '~/features/tasks/stop-task';
 import { cn, useFormErrors } from '~/shared/lib';
-import { TextField, useErrorAlert } from '~/shared/ui';
+import { Heading, TextField, useErrorAlert } from '~/shared/ui';
 import type action from './action.server';
 import type loader from './loader.server';
 
@@ -45,7 +45,9 @@ function ActiveTask(props: ActiveTaskProps) {
   return (
     <Task.TaskCard className={cn('group/container', props.className)}>
       {isInProgress ? (
-        <h2>{activeTask?.name}</h2>
+        <Heading as="h2" className="text-base md:text-xl">
+          {activeTask?.name}
+        </Heading>
       ) : (
         <fetcher.Form
           ref={formRef}
@@ -85,7 +87,9 @@ function ActiveTask(props: ActiveTaskProps) {
               totalTimeSpent={0} // Pass 0 to not count already spent time
             />
             {activeTask.totalTimeSpent && activeTask.totalTimeSpent > 0 ? (
-              <p className="text-sm text-slate-500">{`Last spent: ${formatTotalTimeSpent(activeTask.totalTimeSpent)}`}</p>
+              <p className="text-wrap text-sm text-muted-foreground">
+                {`Last spent: ${formatTotalTimeSpent(activeTask.totalTimeSpent)}`}
+              </p>
             ) : null}
           </div>
         )}

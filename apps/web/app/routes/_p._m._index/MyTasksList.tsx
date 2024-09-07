@@ -88,7 +88,7 @@ function MyTasksList(props: MyTasksListProps) {
 
   return (
     <div className="group space-y-2">
-      <p className="hidden text-slate-600 [&:not(:has(+[data-component='task']))]:block">
+      <p className="hidden text-muted-foreground [&:not(:has(+[data-component='task']))]:block">
         You have no tasks yet
       </p>
       {[...(initialPage ? [initialPage] : []), ...pages].map((page, i) => (
@@ -117,8 +117,11 @@ function MyTasksList(props: MyTasksListProps) {
             return page.tasks.map((t) => (
               <TaskItem
                 key={t.id}
-                className={cn({ hidden: t.id === activeTask?.id })}
                 task={t}
+                className={cn(
+                  { hidden: t.id === activeTask?.id },
+                  String.raw`grid-cols-1 gap-3 sm:grid-cols-2 md:gap-1 [&_.task-toolbar\_\_extra-actions]:flex-row [&_.task-toolbar\_\_extra-actions]:gap-3 md:[&_.task-toolbar\_\_extra-actions]:gap-1`,
+                )}
               />
             ));
           })()}

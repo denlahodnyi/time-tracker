@@ -1,5 +1,6 @@
 import { type Prisma } from '@libs/prisma';
 import { z } from 'zod';
+import { isValid, parseISO } from 'date-fns';
 
 import { ModelBase } from '../core/classes/index.js';
 import { errorFactory } from '../core/helpers/index.js';
@@ -40,6 +41,14 @@ const parseTaskId = (userId: number) => {
 
   if (!success)
     throw errorFactory.create('bad_request', { message: 'Invalid id param' });
+};
+const parseClientDate = (isoDate: string) => {
+  const { success } = z
+    .string()
+    .refine((val) => isValid(parseISO(val)), 'Invalid client date')
+    .safeParse(isoDate);
+
+  return success;
 };
 
 const ITEMS_BEYOND_LIMIT = 1;
@@ -185,7 +194,6 @@ export default class Task extends ModelBase {
 
       tasks = await Promise.all(tasksPromises);
     }
-
     if (active) {
       active.totalTimeSpent = await this.client.task.getTotalTimeSpent(
         userId,
@@ -457,5 +465,47 @@ export default class Task extends ModelBase {
     }
 
     return { task };
+  }
+
+  async getAnalytics(userId: number, userIsoDate?: string) {
+    parseUserId(userId);
+
+    if (!userIsoDate) {
+      console.warn('User date was not provided. Server date will be used');
+    }
+
+    let clientDate = new Date().toISOString();
+
+    if (userIsoDate && parseClientDate(userIsoDate)) {
+      clientDate = userIsoDate;
+    }
+
+    const [
+      { _all: totalTasks },
+      totalAvgTimeSpent,
+      todayTotalTimeSpent,
+      weekTotalTimeSpent,
+      topLongest,
+      topShortest,
+    ] = await Promise.all([
+      this.client.userTasks.count({
+        select: { _all: true },
+        where: { userId, isAssigned: true, isAuthor: true },
+      }),
+      this.client.task.getAllAvgTimeSpentByUser(userId),
+      this.client.task.getTotalTimeSpentByDate(userId, clientDate),
+      this.client.task.getTotalTimeSpentByWeek(userId, clientDate),
+      this.client.task.geTopLongestByUser(userId, clientDate),
+      this.client.task.geTopShortestByUser(userId, clientDate),
+    ]);
+
+    return {
+      totalTasks,
+      totalAvgTimeSpent,
+      todayTotalTimeSpent,
+      weekTotalTimeSpent,
+      topLongest,
+      topShortest,
+    };
   }
 }

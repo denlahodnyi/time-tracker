@@ -1,4 +1,4 @@
-import type { InfiniteData } from '@tanstack/react-query';
+// import type { InfiniteData } from '@tanstack/react-query';
 
 import type {
   CursorPagination,
@@ -69,7 +69,24 @@ export interface MyTaskEventSuccessReturn {
   task: UserTaskDTO;
 }
 
-export type AllTasksQueryData = InfiniteData<{
-  tasks: TaskBase[];
-  pagination: CursorPagination;
-}>;
+// export type AllTasksQueryData = InfiniteData<{
+//   tasks: TaskBase[];
+//   pagination: CursorPagination;
+// }>;
+
+export interface MyTasksAnalytics {
+  totalTasks: number;
+  totalAvgTimeSpent: number;
+  todayTotalTimeSpent: number;
+  weekTotalTimeSpent: number;
+  topLongest: {
+    taskId: number;
+    totalTimeSpent: number;
+    name: string;
+  }[];
+  topShortest: {
+    taskId: number;
+    totalTimeSpent: number;
+    name: string;
+  }[];
+}

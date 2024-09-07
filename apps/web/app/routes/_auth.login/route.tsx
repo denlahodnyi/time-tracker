@@ -63,7 +63,7 @@ export default function LoginPage() {
             Login
           </Button>
         </fetcher.Form>
-        <div className="mt-4 border-t border-slate-300 pt-2 text-center">
+        <div className="mt-4 border-t border-border pt-2 text-center">
           <p>Doesn&apos;t have an account yet?</p>
           <Button asChild variant="link">
             <Link to="/signup">Sign up</Link>

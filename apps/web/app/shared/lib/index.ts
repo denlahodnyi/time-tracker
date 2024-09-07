@@ -7,3 +7,4 @@ export { default as isSSR } from './isSSR';
 export { default as useFormErrors } from './useFormErrors';
 export { default as cn } from './cn';
 export { default as msToDuration } from './msToDuration';
+export { default as leadingZeroNum } from './leadingZeroNum';

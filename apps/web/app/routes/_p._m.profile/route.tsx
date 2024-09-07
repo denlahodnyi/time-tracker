@@ -7,7 +7,7 @@ export { action };
 
 export default function ProfilePage() {
   return (
-    <div className="px-8 py-4">
+    <div className="px-3 py-4 md:px-8">
       <Heading className="mb-3">Profile</Heading>
       <div className="max-w-md">
         <UserProfileForm />

@@ -46,6 +46,11 @@ router
   .all(requireAuth())
   .get(taskController.getUserTaskTimeEntries.mount);
 
+router
+  .route('/analytics')
+  .all(requireAuth())
+  .get(taskController.getUserTasksAnalytics.mount);
+
 // /teams
 // /teams/:team_id
 // /teams/:team_id/tasks
