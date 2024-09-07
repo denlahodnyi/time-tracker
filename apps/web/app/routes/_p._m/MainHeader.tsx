@@ -23,7 +23,7 @@ export default function MainHeader() {
   const avatarFallback = `${firstName.at(0)}${lastName?.at(0) || ''}`;
 
   return (
-    <header className="sticky top-0 flex border border-b-ring bg-background px-5 py-2">
+    <header className="sticky top-0 flex items-center border-b border-b-primary bg-background px-3 py-2 md:px-5">
       {location.pathname !== '/' && (
         <Button
           asChild
@@ -38,7 +38,7 @@ export default function MainHeader() {
       )}
       <DropdownMenu>
         <DropdownMenuTrigger className="ml-auto mr-0">
-          <Avatar className="border border-border">
+          <Avatar className="h-10 w-10 border border-border text-lg md:h-12 md:w-12 md:text-xl">
             <AvatarFallback>{avatarFallback}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>

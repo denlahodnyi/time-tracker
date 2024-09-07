@@ -12,3 +12,4 @@ export * from './textfield';
 export * from './toaster';
 export * from './heading';
 export * from './card';
+export * from './chart';

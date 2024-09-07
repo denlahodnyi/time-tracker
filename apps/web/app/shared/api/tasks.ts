@@ -43,3 +43,20 @@ export interface UserStopTaskDTO
   entryId: TimeEntries['id'];
   event: 'stop';
 }
+
+export interface UserTasksAnalyticsDTO {
+  totalTasks: number;
+  totalAvgTimeSpent: string;
+  todayTotalTimeSpent: string;
+  weekTotalTimeSpent: string;
+  topLongest: {
+    task_id: number;
+    total_time: string;
+    name: string;
+  }[];
+  topShortest: {
+    task_id: number;
+    total_time: string;
+    name: string;
+  }[];
+}

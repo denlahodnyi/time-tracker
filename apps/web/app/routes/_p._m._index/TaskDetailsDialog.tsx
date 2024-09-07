@@ -52,9 +52,9 @@ function TaskDetailsDialog(props: TaskDetailsDialogProps) {
           />
         ) : (
           <div className="[&_p:not(:empty)]:mb-2">
-            <h3 className="text-slate-600">Name</h3>
+            <h3 className="text-muted-foreground">Name</h3>
             <p>{task?.name || ''}</p>
-            <h3 className="text-slate-600">Description</h3>
+            <h3 className="text-muted-foreground">Description</h3>
             <p>{task?.description || ''}</p>
           </div>
         )}

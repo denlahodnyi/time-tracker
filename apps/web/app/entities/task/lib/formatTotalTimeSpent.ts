@@ -1,4 +1,4 @@
-import { msToDuration } from '~/shared/lib';
+import { leadingZeroNum, msToDuration } from '~/shared/lib';
 
 export default function formatTotalTimeSpent(timeInMs: number) {
   const {
@@ -26,9 +26,5 @@ export default function formatTotalTimeSpent(timeInMs: number) {
     return `> ${days} day${isPlural ? 's' : ''}`;
   }
 
-  const hoursStr = hours >= 10 ? hours : `0${hours}`;
-  const minutesStr = minutes >= 10 ? minutes : `0${minutes}`;
-  const secondsStr = seconds >= 10 ? seconds : `0${seconds}`;
-
-  return `${hoursStr}:${minutesStr}:${secondsStr}`;
+  return `${leadingZeroNum(hours)}:${leadingZeroNum(minutes)}:${leadingZeroNum(seconds)}`;
 }

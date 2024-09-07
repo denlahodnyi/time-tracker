@@ -12,6 +12,7 @@ export interface Routes {
   '/tasks': RouteParts;
   '/tasks/:taskId': RouteParts<{ params: { taskId: number } }>;
   '/tasks/:taskId/event': RouteParts<{ params: { taskId: number } }>;
+  '/analytics': RouteParts;
 }
 
 export interface RecZodLikeFormErrors {

@@ -7,11 +7,13 @@ import {
   type UserStartTaskDTO,
   type UserStopTaskDTO,
   type UserTaskDTO,
+  type UserTasksAnalyticsDTO,
   type UserUpdateTaskDTO,
 } from '~/shared/api';
 import {
   userNewTaskToDto,
   userTaskFromDto,
+  userTasksAnalyticsFromDto,
   userTasksFromDto,
   userTaskToDto,
 } from './dto';
@@ -211,6 +213,20 @@ class TaskService {
             ? { task: userTaskFromDto(data.data.task) }
             : null,
       },
+      response,
+    };
+  }
+
+  async getMyAnalytics(requestOptions?: ClientRequestOptions) {
+    const { data, response } = await this.client.get<
+      ResponseData<UserTasksAnalyticsDTO>
+    >(constructEndpoint('/analytics'), requestOptions);
+
+    if (!data) throw new Error('Cannot fetch analytics');
+    if (data.status === 'error') throw new Error(data.error);
+
+    return {
+      result: userTasksAnalyticsFromDto(data.data),
       response,
     };
   }

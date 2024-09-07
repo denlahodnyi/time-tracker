@@ -5,3 +5,4 @@ export { default as deleteUserTask } from './deleteUserTask.js';
 export { default as updateUserTask } from './updateUserTask.js';
 export { default as userTaskEvent } from './userTaskEvent.js';
 export { default as getUserTaskTimeEntries } from './getUserTaskTimeEntries.js';
+export { default as getUserTasksAnalytics } from './getUserTasksAnalytics.js';

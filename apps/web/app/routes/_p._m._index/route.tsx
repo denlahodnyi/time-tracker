@@ -1,6 +1,10 @@
 import type { MetaFunction } from '@remix-run/node';
-import { useLoaderData, type ClientLoaderFunctionArgs } from '@remix-run/react';
-import { PlusIcon } from 'lucide-react';
+import {
+  Link,
+  useLoaderData,
+  type ClientLoaderFunctionArgs,
+} from '@remix-run/react';
+import { BarChartBigIcon, PlusIcon } from 'lucide-react';
 
 import { CreateNewTaskDialog } from '~/features/tasks/create-task';
 import { Button } from '~/shared/ui';
@@ -42,13 +46,21 @@ export default function Index() {
   const loaderData = useLoaderData<typeof loader & typeof clientLoader>();
 
   return (
-    <div className="space-y-4 px-5 py-4">
+    <div className="space-y-4 px-3 py-4 md:px-5">
       <ActiveTask />
-      <CreateNewTaskDialog>
-        <Button variant="outline">
-          <PlusIcon /> Add new task
+      <div className="flex gap-5">
+        <Button asChild variant="outline">
+          <Link to="/analytics">
+            <BarChartBigIcon />
+            Check my stats
+          </Link>
         </Button>
-      </CreateNewTaskDialog>
+        <CreateNewTaskDialog>
+          <Button variant="outline">
+            <PlusIcon /> Add new task
+          </Button>
+        </CreateNewTaskDialog>
+      </div>
       <MyTasksList
         activeTask={loaderData.activeTask}
         initialCursors={loaderData.initialCursors}

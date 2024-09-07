@@ -28,7 +28,7 @@ function TaskCard({ children, className, ...props }: TaskCardProps) {
     <Card
       data-component="task"
       className={cn(
-        'grid h-20 grid-cols-2 items-center rounded-md border-[1px] border-border px-3 py-2 transition-shadow duration-300 hover:shadow-md',
+        'grid min-h-20 grid-cols-2 items-center gap-1 rounded-md border-[1px] border-border px-3 py-2 transition-shadow duration-300 hover:shadow-md md:gap-3',
         className,
       )}
       {...props}
@@ -72,7 +72,11 @@ function TaskTimer({ startDate, totalTimeSpent, ...props }: TaskTimerProps) {
     };
   }, [start, totalTimeSpent]);
 
-  return <p {...props}>{timer}</p>;
+  return (
+    <p suppressHydrationWarning role="timer" {...props}>
+      {timer}
+    </p>
+  );
 }
 
 function MainAction({

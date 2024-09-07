@@ -28,10 +28,10 @@ function TaskItem(props: TaskProps) {
   return (
     <Task.TaskCard asChild className={className}>
       <article>
-        <Heading as="h2" className="text-lg">
+        <Heading as="h2" className="text-base md:text-lg">
           {task.name}
         </Heading>
-        <div className="flex items-center gap-4 justify-self-end">
+        <div className="task-toolbar flex items-center gap-3 justify-self-end md:gap-4">
           <p>{timeSpent}</p>
           <fetcher.Form
             action="/?index"
@@ -62,7 +62,7 @@ function TaskItem(props: TaskProps) {
               value={START_TASK_ACTION}
             />
           </fetcher.Form>
-          <div className="-my-2 -mr-1 flex flex-col gap-1">
+          <div className="task-toolbar__extra-actions -my-2 -mr-1 flex flex-col gap-1">
             <TaskDetailsDialog
               open={isDetailsDialogOpen}
               task={task}

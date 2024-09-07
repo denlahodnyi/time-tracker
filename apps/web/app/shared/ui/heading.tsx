@@ -6,13 +6,16 @@ import { cn } from '../lib';
 const headingVariants = cva('', {
   variants: {
     type: {
-      h1: 'text-5xl',
-      h2: 'text-4xl',
-      h3: 'text-3xl',
-      h4: 'text-2xl',
-      h5: 'text-xl',
-      h6: 'text-lg',
+      h1: 'text-4xl md:text-5xl',
+      h2: 'text-3xl md:text-4xl',
+      h3: 'text-2xl md:text-3xl',
+      h4: 'text-xl md:text-2xl',
+      h5: 'text-lg md:text-xl',
+      h6: 'text-base md:text-lg',
     },
+  },
+  defaultVariants: {
+    type: 'h1',
   },
 });
 

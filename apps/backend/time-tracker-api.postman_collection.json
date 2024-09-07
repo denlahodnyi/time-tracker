@@ -83,7 +83,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"Jack\",\n    \"email\": \"jack@g.com\",\n    \"password\": \"12345\"\n}"
+							"raw": "{\n    \"firstName\": \"Den\",\n    \"email\": \"den@g.com\",\n    \"password\": \"12345\"\n}"
 						},
 						"url": {
 							"raw": "{{URI}}/signup",
@@ -249,7 +249,7 @@
 							"query": [
 								{
 									"key": "cursor",
-									"value": "1",
+									"value": "2",
 									"disabled": true
 								}
 							]
@@ -301,6 +301,29 @@
 									"key": "taskId",
 									"value": ""
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user tasks analytics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Client-Date",
+								"value": "{{$isoTimestamp}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URI}}/analytics",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"analytics"
 							]
 						}
 					},
