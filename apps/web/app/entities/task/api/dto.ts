@@ -24,6 +24,7 @@ export function userTaskFromDto(
     isAuthor: taskDto.users[0].isAuthor,
     isAssigned: taskDto.users[0].isAssigned,
     // timeEntries: taskDto.timeEntries,
+    completedAt: taskDto.completedAt ? new Date(taskDto.completedAt) : null,
     timeEntries: 'timeEntries' in taskDto ? taskDto.timeEntries : undefined,
   };
 }

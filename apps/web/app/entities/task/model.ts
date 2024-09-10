@@ -21,6 +21,7 @@ export interface TaskBase {
   totalTimeSpent: number | null;
   isAuthor: boolean;
   isAssigned: boolean;
+  completedAt: Date | null;
   timeEntries?: TimeEntry[];
 }
 
@@ -63,6 +64,11 @@ export interface MyTaskStopPayload {
 export interface MyTaskStartPayload {
   taskId: number;
   startedAt: Date;
+}
+
+export interface MyTaskCompletePayload {
+  taskId: number;
+  completedAt: Date;
 }
 
 export interface MyTaskEventSuccessReturn {

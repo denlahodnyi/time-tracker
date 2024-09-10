@@ -27,6 +27,10 @@ const StopEventInput = z.object({
   finishedAt: z.coerce.date(),
 });
 
+const CompleteEventInput = z.object({
+  completedAt: z.coerce.date(),
+});
+
 const UserIdInput = z.number();
 const TaskIdInput = z.number();
 
@@ -370,6 +374,7 @@ export default class Task extends ModelBase {
     const [task, timeSpent] = await Promise.all([
       this.client.task.update({
         data: {
+          completedAt: null, // TODO: test
           timeEntries: {
             create: [
               {
@@ -462,6 +467,70 @@ export default class Task extends ModelBase {
 
     if (task && timeSpent) {
       task.totalTimeSpent = timeSpent;
+    }
+
+    return { task };
+  }
+
+  async complete(
+    userId: number,
+    taskId: number,
+    data: z.infer<typeof CompleteEventInput>,
+  ) {
+    parseUserId(userId);
+    parseTaskId(taskId);
+
+    const existedTask = await this.client.task.findUnique({
+      where: {
+        id: taskId,
+        users: {
+          some: { userId },
+        },
+      },
+      include: {
+        timeEntries: {
+          where: {
+            startedAt: { not: null },
+            finishedAt: null,
+          },
+        },
+      },
+    });
+
+    if (!existedTask) {
+      throw errorFactory.create('not_found', { message: 'Task not found' });
+    }
+    if (existedTask.completedAt) {
+      throw errorFactory.create('bad_request', {
+        message: 'Task is already done',
+      });
+    }
+
+    const task = await this.client.task.update({
+      data: {
+        completedAt: data.completedAt,
+        ...(existedTask.timeEntries[0]
+          ? {
+              timeEntries: {
+                update: {
+                  data: {
+                    finishedAt: data.completedAt,
+                  },
+                  where: { id: existedTask.timeEntries[0].id },
+                },
+              },
+            }
+          : {}),
+      },
+      where: { id: existedTask.id },
+      include: { users: true },
+    });
+
+    if (task) {
+      task.totalTimeSpent = await this.client.task.getTotalTimeSpent(
+        userId,
+        taskId,
+      );
     }
 
     return { task };

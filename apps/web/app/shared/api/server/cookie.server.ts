@@ -23,3 +23,7 @@ export const stopTaskCountCookie = createCookie('stop-task', {
 export const taskUpdateCounterCookie = createCookie('update-task', {
   httpOnly: true,
 });
+
+export const taskCompleteCounterCookie = createCookie('complete-task', {
+  httpOnly: true,
+});

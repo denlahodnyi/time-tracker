@@ -542,6 +542,7 @@ describe('/tasks', () => {
         data: {
           task: {
             id: task.id,
+            completedAt: null,
             timeEntries: [
               {
                 startedAt,
@@ -620,6 +621,116 @@ describe('/tasks', () => {
         .send({
           event: 'start',
           startedAt,
+        });
+
+      expect(status).toBe(400);
+      getErrorResponseExpects(body);
+    });
+
+    it('returns 200 status code and task with time entry for successfully completed task', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const task = await taskFactory.create(
+        {},
+        { transient: { client: httpCtx.client, userId: createdUser.id } },
+      );
+      const completedAt = new Date().toISOString();
+      const { body, status } = await agent
+        .patch(`/api/tasks/${task.id}/event`)
+        .send({
+          event: 'complete',
+          completedAt,
+        });
+
+      expect(status).toBe(200);
+      expect(body).toMatchObject({
+        status: 'success',
+        data: {
+          task: {
+            id: task.id,
+            completedAt,
+          },
+        },
+      });
+    });
+
+    it('finishes active task on completion', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const task = await taskFactory.create(
+        {},
+        {
+          transient: {
+            client: httpCtx.client,
+            userId: createdUser.id,
+            startedAt: new Date().toISOString(),
+          },
+        },
+      );
+
+      const activeTe = await httpCtx.client.timeEntries.findFirst({
+        where: {
+          userId: createdUser.id,
+          taskId: task.id,
+        },
+      });
+
+      const completedAt = new Date().toISOString();
+      const { body, status } = await agent
+        .patch(`/api/tasks/${task.id}/event`)
+        .send({
+          event: 'complete',
+          completedAt,
+        });
+
+      const finishedTe = await httpCtx.client.timeEntries.findUnique({
+        where: {
+          id: activeTe?.id,
+        },
+      });
+
+      expect(status).toBe(200);
+      expect(body).toMatchObject({
+        status: 'success',
+        data: {
+          task: {
+            id: task.id,
+            completedAt,
+          },
+        },
+      });
+      expect(activeTe).not.toBeNull();
+      expect(finishedTe).not.toBeNull();
+      expect(finishedTe?.finishedAt).toBeDefined();
+    });
+
+    it('returns 400 status code and error if task is already completed', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const task = await taskFactory.create(
+        {},
+        {
+          transient: {
+            client: httpCtx.client,
+            userId: createdUser.id,
+            startedAt: new Date().toISOString(),
+          },
+        },
+      );
+
+      await agent.patch(`/api/tasks/${task.id}/event`).send({
+        event: 'complete',
+        completedAt: new Date().toISOString(),
+      });
+
+      const { body, status } = await agent
+        .patch(`/api/tasks/${task.id}/event`)
+        .send({
+          event: 'complete',
+          completedAt: new Date().toISOString(),
         });
 
       expect(status).toBe(400);

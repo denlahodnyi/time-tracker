@@ -1,4 +1,4 @@
-import type { Prisma, TimeEntries } from '@libs/prisma';
+import type { Prisma, Task, TimeEntries } from '@libs/prisma';
 import type { Jsonify } from 'type-fest';
 
 // import { Prisma, P } from '@libs/prisma';
@@ -42,6 +42,11 @@ export interface UserStopTaskDTO
   extends Required<Pick<TimeEntries, 'finishedAt'>> {
   entryId: TimeEntries['id'];
   event: 'stop';
+}
+
+export interface UserCompleteTaskDTO
+  extends Required<Pick<Task, 'completedAt'>> {
+  event: 'complete';
 }
 
 export interface UserTasksAnalyticsDTO {

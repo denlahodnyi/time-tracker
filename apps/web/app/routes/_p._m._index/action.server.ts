@@ -1,5 +1,10 @@
 import { ActionFunctionArgs, json } from '@remix-run/node';
 
+import { COMPLETE_TASK_ACTION } from '~/features/tasks/complete';
+import {
+  completeTask,
+  type CompleteMyTaskParsedFormData,
+} from '~/features/tasks/complete/server';
 import {
   CREATE_TASK_ACTION,
   START_NEW_TASK_ACTION,
@@ -39,7 +44,8 @@ export type ActionFormData =
   | StopTaskParsedFormData
   | StartTaskParsedFormData
   | DeleteMyTaskParsedFormData
-  | UpdateMyTaskParsedFormData;
+  | UpdateMyTaskParsedFormData
+  | CompleteMyTaskParsedFormData;
 
 export default async function action({ request }: ActionFunctionArgs) {
   try {
@@ -79,6 +85,13 @@ export default async function action({ request }: ActionFunctionArgs) {
       }
       case STOP_TASK_ACTION: {
         const { data, setCookie } = await stopTask(formData, request);
+
+        return json(data, {
+          headers: { 'Set-Cookie': setCookie },
+        });
+      }
+      case COMPLETE_TASK_ACTION: {
+        const { data, setCookie } = await completeTask(formData, request);
 
         return json(data, {
           headers: { 'Set-Cookie': setCookie },

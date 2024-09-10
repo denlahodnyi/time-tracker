@@ -1,5 +1,21 @@
 {
   "css.lint.unknownAtRules": "ignore",
-  // "eslint.workingDirectories": ["../apps/backend", "../apps/web"],
-  "npm.packageManager": "pnpm"
+  "npm.packageManager": "pnpm",
+  "jest.virtualFolders": [
+    {
+      "name": "web",
+      "rootPath": "apps/web",
+      "jestCommandLine": "pnpm test"
+    },
+    {
+      "name": "backend-unit",
+      "rootPath": "apps/backend",
+      "jestCommandLine": "pnpm test:unit"
+    },
+    {
+      "name": "backend-integration",
+      "rootPath": "apps/backend",
+      "jestCommandLine": "pnpm test:int"
+    }
+  ]
 }

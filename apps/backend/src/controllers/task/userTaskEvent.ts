@@ -13,7 +13,8 @@ type EventBody =
       finishedAt: string;
     }
   | {
-      event: 'done';
+      event: 'complete';
+      completedAt: string;
     };
 
 class UserTaskEvent extends ControllerCreator {
@@ -37,6 +38,16 @@ class UserTaskEvent extends ControllerCreator {
         {
           finishedAt: body.finishedAt as unknown as Date,
           entryId: Number(body.entryId),
+        },
+      );
+
+      this.ok({ task });
+    } else if (body.event === 'complete') {
+      const { task } = await new TaskModel(client).complete(
+        this.req.user.id,
+        Number(this.req.params.taskId),
+        {
+          completedAt: body.completedAt as unknown as Date,
         },
       );
 
