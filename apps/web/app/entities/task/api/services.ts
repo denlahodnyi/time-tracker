@@ -3,6 +3,7 @@ import {
   type ApiClient,
   type ClientRequestOptions,
   type ResponseData,
+  type UserCompleteTaskDTO,
   type UserCreateTaskDTO,
   type UserStartTaskDTO,
   type UserStopTaskDTO,
@@ -18,6 +19,7 @@ import {
   userTaskToDto,
 } from './dto';
 import type {
+  MyTaskCompletePayload,
   MyTaskCreatePayload,
   MyTaskEventSuccessReturn,
   MyTaskStartPayload,
@@ -203,6 +205,42 @@ class TaskService {
     );
 
     if (!data) throw new Error('Cannot delete tasks');
+
+    return {
+      result: {
+        error: data.status === 'error' ? data.error : null,
+        errors: data.status === 'error' ? data.errors : null,
+        data:
+          data.status === 'success'
+            ? { task: userTaskFromDto(data.data.task) }
+            : null,
+      },
+      response,
+    };
+  }
+
+  async completeTask(
+    payload: MyTaskCompletePayload,
+    requestOptions?: ClientRequestOptions,
+  ) {
+    const { data, response } = await this.client.post<
+      ResponseData<MyTaskEventSuccessReturn>,
+      UserCompleteTaskDTO
+    >(
+      constructEndpoint('/tasks/:taskId/event', {
+        params: { taskId: payload.taskId },
+      }),
+      { event: 'complete', completedAt: payload.completedAt },
+      {
+        ...requestOptions,
+        fetchOpts: {
+          method: 'PATCH',
+          ...(requestOptions?.fetchOpts || {}),
+        },
+      },
+    );
+
+    if (!data) throw new Error('Cannot complete tasks');
 
     return {
       result: {

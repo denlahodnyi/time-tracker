@@ -3,6 +3,7 @@ import { Fragment, useEffect } from 'react';
 import { useImmer } from 'use-immer';
 
 import type { TaskBase } from '~/entities/task';
+import { COMPLETE_TASK_ACTION } from '~/features/tasks/complete';
 import { DELETE_TASK_ACTION } from '~/features/tasks/delete-task';
 import { UPDATE_TASK_ACTION } from '~/features/tasks/update-task';
 import type { CursorPagination } from '~/shared/api';
@@ -36,8 +37,16 @@ function MyTasksList(props: MyTasksListProps) {
     // Reset pages to trigger revalidation in useEffect
     onSuccess: () => setPages([]),
   });
+
   useEnhancedFetcher<typeof action>({
     key: DELETE_TASK_ACTION,
+    checkSuccess: (data) => Boolean(data.data?.task),
+    // Reset pages to trigger revalidation in useEffect
+    onSuccess: () => setPages([]),
+  });
+
+  useEnhancedFetcher<typeof action>({
+    key: COMPLETE_TASK_ACTION,
     checkSuccess: (data) => Boolean(data.data?.task),
     // Reset pages to trigger revalidation in useEffect
     onSuccess: () => setPages([]),
@@ -117,11 +126,8 @@ function MyTasksList(props: MyTasksListProps) {
             return page.tasks.map((t) => (
               <TaskItem
                 key={t.id}
+                className={cn({ hidden: t.id === activeTask?.id })}
                 task={t}
-                className={cn(
-                  { hidden: t.id === activeTask?.id },
-                  String.raw`grid-cols-1 gap-3 sm:grid-cols-2 md:gap-1 [&_.task-toolbar\_\_extra-actions]:flex-row [&_.task-toolbar\_\_extra-actions]:gap-3 md:[&_.task-toolbar\_\_extra-actions]:gap-1`,
-                )}
               />
             ));
           })()}

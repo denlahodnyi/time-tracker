@@ -131,7 +131,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"den@g.com\",\n    \"password\": \"12345\"\n}"
+							"raw": "{\n    \"email\": \"jack@g.com\",\n    \"password\": \"12345\"\n}"
 						},
 						"url": {
 							"raw": "{{URI}}/signin",
@@ -249,7 +249,7 @@
 							"query": [
 								{
 									"key": "cursor",
-									"value": "2",
+									"value": "1",
 									"disabled": true
 								}
 							]
@@ -274,7 +274,7 @@
 							"variable": [
 								{
 									"key": "taskId",
-									"value": ""
+									"value": "7"
 								}
 							]
 						}
@@ -448,6 +448,40 @@
 								{
 									"key": "taskId",
 									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Task event (complete)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event\": \"complete\",\n    \"completedAt\": {{$isoTimestamp}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URI}}/tasks/:taskId/event",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks",
+								":taskId",
+								"event"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "7"
 								}
 							]
 						}

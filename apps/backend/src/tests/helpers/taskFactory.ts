@@ -143,6 +143,7 @@ const taskFactory = TaskFactory.define<TaskExtended, TransientParams>(
         params.description ||
         'Sunt veniam sint mollit consectetur elit aliqua ea sunt.',
       totalTimeSpent: null,
+      completedAt: params.completedAt || null,
       createdAt: params.createdAt || new Date(),
       updatedAt: params.updatedAt || new Date(),
     };
