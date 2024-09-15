@@ -131,7 +131,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"jack@g.com\",\n    \"password\": \"12345\"\n}"
+							"raw": "{\n    \"email\": \"den@g.com\",\n    \"password\": \"12345\"\n}"
 						},
 						"url": {
 							"raw": "{{URI}}/signin",
@@ -214,7 +214,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"{{$randomLoremWords}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"startedAt\": \"{{$isoTimestamp}}\"\n}",
+							"raw": "{\n    \"name\": \"Task #2\"\n    // \"name\": \"{{$randomLoremWords}}\",\n    // \"description\": \"{{$randomLoremSentence}}\",\n    // \"startedAt\": \"{{$isoTimestamp}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -250,6 +250,16 @@
 								{
 									"key": "cursor",
 									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "task_id",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "filter_by",
+									"value": "completed",
 									"disabled": true
 								}
 							]
@@ -324,6 +334,35 @@
 							],
 							"path": [
 								"analytics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/tasks/search?name=task ",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"tasks",
+								"search"
+							],
+							"query": [
+								{
+									"key": "filter_by",
+									"value": "completed",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "task "
+								}
 							]
 						}
 					},
@@ -461,7 +500,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"event\": \"complete\",\n    \"completedAt\": {{$isoTimestamp}}\n}",
+							"raw": "{\n    \"event\": \"complete\",\n    \"completedAt\": \"{{$isoTimestamp}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -481,7 +520,7 @@
 							"variable": [
 								{
 									"key": "taskId",
-									"value": "7"
+									"value": "6"
 								}
 							]
 						}

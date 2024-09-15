@@ -21,7 +21,7 @@ export interface TaskBase {
   totalTimeSpent: number | null;
   isAuthor: boolean;
   isAssigned: boolean;
-  completedAt: Date | null;
+  completedAt: string | null;
   timeEntries?: TimeEntry[];
 }
 
@@ -96,3 +96,5 @@ export interface MyTasksAnalytics {
     name: string;
   }[];
 }
+
+export type TasksFilterByUrlParam = 'completed' | null;

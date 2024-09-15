@@ -37,6 +37,9 @@ interface TaskProps {
 interface CompletionFormElements extends HTMLFormControlsCollection {
   completedAt: HTMLInputElement;
 }
+interface CompletionForm extends HTMLFormElement {
+  readonly elements: CompletionFormElements;
+}
 
 function TaskItem(props: TaskProps) {
   const {
@@ -142,19 +145,16 @@ function TaskItem(props: TaskProps) {
                 <fetcher.Form
                   action="/?index"
                   method="post"
-                  onSubmit={(e) => {
+                  onSubmit={(e: React.FormEvent<CompletionForm>) => {
                     if (isLoading) {
                       e.preventDefault();
 
                       return;
                     }
 
-                    const elements = e.currentTarget
-                      .elements as CompletionFormElements;
+                    const { completedAt } = e.currentTarget.elements;
 
-                    if (elements.completedAt) {
-                      elements.completedAt.value = new Date().toISOString();
-                    }
+                    completedAt.value = new Date().toISOString();
                   }}
                 >
                   <input name="taskId" type="hidden" value={task.id} />

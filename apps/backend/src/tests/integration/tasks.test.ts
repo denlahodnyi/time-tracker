@@ -193,6 +193,70 @@ describe('/tasks', () => {
     });
   });
 
+  describe('[GET] /tasks?task_id=<id>', () => {
+    it('returns task with matched id', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const tasks = await taskFactory.createList(
+        2,
+        {},
+        { transient: { client: httpCtx.client, userId: createdUser.id } },
+      );
+      const { body, status } = await agent.get(
+        `/api/tasks?task_id=${tasks[0].id}`,
+      );
+
+      expect(status).toBe(200);
+      expect(body.data.tasks).toHaveLength(1);
+      expect(body.data.tasks[0]).toHaveProperty('id', tasks[0].id);
+    });
+  });
+
+  describe('[GET] /tasks?task_id=<id>&filter_by=completed', () => {
+    it('returns only completed task with matched id', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const tasks = await taskFactory.createList(
+        2,
+        {},
+        { transient: { client: httpCtx.client, userId: createdUser.id } },
+      );
+
+      await agent.patch(`/api/tasks/${tasks[0].id}/event`).send({
+        event: 'complete',
+        completedAt: new Date().toISOString(),
+      });
+
+      const { body, status } = await agent.get(
+        `/api/tasks?task_id=${tasks[0].id}&filter_by=completed`,
+      );
+
+      expect(status).toBe(200);
+      expect(body.data.tasks).toHaveLength(1);
+      expect(body.data.tasks[0]).toHaveProperty('id', tasks[0].id);
+    });
+
+    it("doesn't return task with matched id if it's not completed", async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const tasks = await taskFactory.createList(
+        2,
+        {},
+        { transient: { client: httpCtx.client, userId: createdUser.id } },
+      );
+
+      const { body, status } = await agent.get(
+        `/api/tasks?task_id=${tasks[0].id}&filter_by=completed`,
+      );
+
+      expect(status).toBe(200);
+      expect(body.data.tasks).toHaveLength(0);
+    });
+  });
+
   describe('[POST] /tasks', () => {
     it('returns 401 status code and error status with message for unauthenticated user', async () => {
       const { body, status } = await httpCtx.agent.post('/api/tasks').send({
@@ -801,6 +865,94 @@ describe('/tasks', () => {
 
       expect(status).toBe(200);
       expect(body.data.timeEntries).toHaveLength(2);
+    });
+  });
+
+  describe('[GET] /tasks/search', () => {
+    it('returns 401 status code and error status with message for unauthenticated user', async () => {
+      const { body, status } = await httpCtx.agent.get(
+        `/api/tasks/search?name=foo`,
+      );
+
+      expect(status).toBe(401);
+      getErrorResponseExpects(body);
+    });
+
+    it('returns 200 status code and list of matched tasks', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const tasks = await taskFactory.createList(
+        3,
+        {},
+        { transient: { client: httpCtx.client, userId: createdUser.id } },
+      );
+
+      const res1 = await agent.get(
+        `/api/tasks/search?name=${encodeURIComponent(tasks[0].name)}`,
+      );
+      const res2 = await agent.get(
+        `/api/tasks/search?name=${encodeURIComponent(tasks[1].name)}`,
+      );
+      const res3 = await agent.get(
+        `/api/tasks/search?name=${encodeURIComponent(tasks[2].name)}`,
+      );
+
+      expect(res1.status).toBe(200);
+      expect(res1.body.data.suggestions[0]).toMatchObject({
+        id: tasks[0].id,
+        name: tasks[0].name,
+      });
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.suggestions[0]).toMatchObject({
+        id: tasks[1].id,
+        name: tasks[1].name,
+      });
+      expect(res3.status).toBe(200);
+      expect(res3.body.data.suggestions[0]).toMatchObject({
+        id: tasks[2].id,
+        name: tasks[2].name,
+      });
+    });
+
+    it('returns 200 status code and list of only completed tasks', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const tasks = await taskFactory.createList(
+        2,
+        {},
+        { transient: { client: httpCtx.client, userId: createdUser.id } },
+      );
+
+      await agent.patch(`/api/tasks/${tasks[1].id}/event`).send({
+        event: 'complete',
+        completedAt: new Date().toISOString(),
+      });
+
+      // must return []
+      const res1 = await agent.get(
+        `/api/tasks/search?filter_by=completed&name=${encodeURIComponent(tasks[0].name)}`,
+      );
+      // must return completed
+      const res2 = await agent.get(
+        `/api/tasks/search?filter_by=completed&name=${encodeURIComponent(tasks[1].name)}`,
+      );
+
+      expect(res1.status).toBe(200);
+      expect(res1.body).toMatchObject({
+        status: 'success',
+        data: {
+          suggestions: [{ id: tasks[1].id, name: tasks[1].name }],
+        },
+      });
+      expect(res2.status).toBe(200);
+      expect(res2.body).toMatchObject({
+        status: 'success',
+        data: {
+          suggestions: [{ id: tasks[1].id, name: tasks[1].name }],
+        },
+      });
     });
   });
 });

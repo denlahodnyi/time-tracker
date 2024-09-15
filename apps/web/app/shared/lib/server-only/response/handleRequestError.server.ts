@@ -1,6 +1,6 @@
 import { json } from '@remix-run/node';
 
-import { ClientError } from '~/shared/api';
+import { ClientError, type ErrorResponseData } from '~/shared/api';
 import { logout } from '~/shared/api/server';
 import { GENERIC_ERROR_MESSAGE } from '~/shared/constants';
 
@@ -31,10 +31,10 @@ export default function handleRequestError(
 
   return json(
     {
+      status: 'error' as const,
       error: GENERIC_ERROR_MESSAGE,
       errors: null,
-      data: null,
-    },
+    } satisfies ErrorResponseData,
     { status: 500 },
   );
 }

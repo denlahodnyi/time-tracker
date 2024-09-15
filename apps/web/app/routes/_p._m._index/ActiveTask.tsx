@@ -1,5 +1,5 @@
 import { useFetcher, useLoaderData } from '@remix-run/react';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Task } from '~/entities/task';
 import { formatTotalTimeSpent } from '~/entities/task/lib';
@@ -15,6 +15,10 @@ interface FormElements extends HTMLFormControlsCollection {
   finishedAt: HTMLInputElement;
   taskId: HTMLInputElement;
   entryId: HTMLInputElement;
+}
+
+interface CreateTaskFormElement extends HTMLFormElement {
+  readonly elements: FormElements;
 }
 
 interface ActiveTaskProps {
@@ -54,17 +58,16 @@ function ActiveTask(props: ActiveTaskProps) {
           action="/?index"
           id="create-and-start-form"
           method="post"
-          onSubmit={(e) => {
+          onSubmit={(e: React.FormEvent<CreateTaskFormElement>) => {
             if (isLoading) {
               e.preventDefault();
 
               return;
             }
-            if (formRef.current) {
-              const elements = formRef.current.elements as FormElements;
 
-              elements.startedAt.value = new Date().toISOString();
-            }
+            const { startedAt } = e.currentTarget.elements;
+
+            startedAt.value = new Date().toISOString();
           }}
         >
           <TextField

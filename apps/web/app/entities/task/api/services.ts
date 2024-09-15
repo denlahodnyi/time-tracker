@@ -34,13 +34,23 @@ class TaskService {
   constructor(private client: ApiClient) {}
 
   async getMyTasks(
-    payload: { cursor: number | null },
+    payload: {
+      cursor: number | null;
+      taskId?: number;
+      filterBy?: 'completed';
+    },
     requestOptions?: ClientRequestOptions,
   ) {
     const { data, response } = await this.client.get<
       ResponseData<MyTasksSuccessGetReturn>
     >(
-      constructEndpoint('/tasks', { query: { cursor: payload.cursor } }),
+      constructEndpoint('/tasks', {
+        query: {
+          cursor: payload.cursor,
+          task_id: payload.taskId,
+          filter_by: payload.filterBy,
+        },
+      }),
       requestOptions,
     );
 
@@ -267,6 +277,27 @@ class TaskService {
       result: userTasksAnalyticsFromDto(data.data),
       response,
     };
+  }
+
+  async searchByName(
+    payload: {
+      name: string;
+      filterBy?: 'completed';
+    },
+    requestOptions?: ClientRequestOptions,
+  ) {
+    const { data, response } = await this.client.get<
+      ResponseData<{ suggestions: { id: number; name: string }[] }>
+    >(
+      constructEndpoint('/tasks/search', {
+        query: { name: payload.name, filter_by: payload.filterBy },
+      }),
+      requestOptions,
+    );
+
+    if (!data) throw new Error('Cannot find any task');
+
+    return { data, response };
   }
 }
 
