@@ -118,11 +118,18 @@ export default class Task extends ModelBase {
     options?: {
       pagination?: { limit: number; cursor?: number | null };
       includeActiveTask?: boolean;
+      query?: {
+        taskId?: number;
+        filterBy?: 'completed';
+      };
     },
   ) {
     parseUserId(userId);
+    z.object({
+      task_id: z.number().optional(),
+    }).parse(options?.query?.taskId);
 
-    const { pagination, includeActiveTask } = options || {};
+    const { pagination, includeActiveTask, query } = options || {};
     const { limit = LIMIT, cursor } = pagination || {};
     let activeTask: Prisma.Result<
       typeof this.client.task,
@@ -137,6 +144,10 @@ export default class Task extends ModelBase {
           users: {
             some: { userId },
           },
+          ...(query?.taskId ? { id: query.taskId } : {}),
+          ...(query?.filterBy === 'completed'
+            ? { completedAt: { not: null } }
+            : {}),
         },
       }),
       this.client.task.findMany({
@@ -149,6 +160,10 @@ export default class Task extends ModelBase {
           users: {
             some: { userId },
           },
+          ...(query?.taskId ? { id: query.taskId } : {}),
+          ...(query?.filterBy === 'completed'
+            ? { completedAt: { not: null } }
+            : {}),
         },
         include: { users: true, timeEntries: false },
       }),
@@ -374,7 +389,7 @@ export default class Task extends ModelBase {
     const [task, timeSpent] = await Promise.all([
       this.client.task.update({
         data: {
-          completedAt: null, // TODO: test
+          completedAt: null,
           timeEntries: {
             create: [
               {
@@ -576,5 +591,48 @@ export default class Task extends ModelBase {
       topLongest,
       topShortest,
     };
+  }
+
+  async searchByName(
+    userId: number,
+    query: {
+      name: string;
+      filterBy?: 'completed';
+    },
+  ) {
+    parseUserId(userId);
+    z.object({ name: z.string() }).parse({ name: query.name });
+
+    // query operator (|) is required for multi word strings
+    const search = query.name.trim().split(' ').join(' | ');
+    const suggestions = await this.client.task.findMany({
+      where: {
+        name: {
+          // search,
+          contains: query.name,
+          mode: 'insensitive',
+        },
+        users: {
+          every: { userId, isAssigned: true, isAuthor: true },
+        },
+        ...(query.filterBy === 'completed'
+          ? {
+              completedAt: {
+                not: null,
+              },
+            }
+          : {}),
+      },
+      orderBy: {
+        _relevance: {
+          fields: ['name'],
+          sort: 'desc', // Most relevant first
+          search,
+        },
+      },
+      select: { id: true, name: true },
+    });
+
+    return { suggestions };
   }
 }

@@ -4,25 +4,20 @@ import { getCookie, getSetCookie } from '~/shared/lib';
 
 export async function getPaginatedUserTasks(
   req: Request,
-  cursor: number | null,
+  payload: Parameters<typeof taskApi.services.getMyTasks>[0],
 ) {
   const cookies = getCookie(req);
-  const { result, response } = await taskApi.services.getMyTasks(
-    { cursor: cursor },
-    {
-      fetchOpts: {
-        headers: {
-          Cookie: cookies,
-        },
-      },
+  const { result, response } = await taskApi.services.getMyTasks(payload, {
+    fetchOpts: {
+      headers: { Cookie: cookies },
     },
-  );
+  });
 
   const counterCookie = await tasksLoadCounterCookie.parse(cookies);
   const _count = typeof counterCookie === 'number' ? counterCookie + 1 : 1;
 
   return {
-    data: cursor
+    data: payload.cursor
       ? {
           isInitial: false as const,
           tasks: result.tasks,

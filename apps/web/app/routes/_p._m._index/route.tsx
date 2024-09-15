@@ -7,6 +7,8 @@ import {
 import { BarChartBigIcon, PlusIcon } from 'lucide-react';
 
 import { CreateNewTaskDialog } from '~/features/tasks/create-task';
+import { TasksFilter } from '~/features/tasks/filter';
+import { TasksSearchForm } from '~/features/tasks/search';
 import { Button } from '~/shared/ui';
 import action from './action.server';
 import { ActiveTask } from './ActiveTask';
@@ -60,6 +62,10 @@ export default function Index() {
             <PlusIcon /> Add new task
           </Button>
         </CreateNewTaskDialog>
+      </div>
+      <div className="flex items-center gap-3">
+        <TasksFilter />
+        <TasksSearchForm />
       </div>
       <MyTasksList
         activeTask={loaderData.activeTask}

@@ -56,9 +56,9 @@ const TextField = forwardRef<
             return (
               <PasswordInput
                 ref={ref as React.ForwardedRef<HTMLInputElement>}
-                id={id}
                 aria-describedby={`${id}-error`}
                 aria-invalid={!!error}
+                id={id}
                 {...(inputProps as InputWithElementsProps)}
               />
             );
@@ -67,9 +67,9 @@ const TextField = forwardRef<
             return (
               <Textarea
                 ref={ref as React.ForwardedRef<HTMLTextAreaElement>}
-                id={id}
                 aria-describedby={`${id}-error`}
                 aria-invalid={!!error}
+                id={id}
                 {...(inputProps as TextareaProps)}
               />
             );
@@ -78,16 +78,16 @@ const TextField = forwardRef<
             return (
               <InputWithElements
                 ref={ref as React.ForwardedRef<HTMLInputElement>}
-                id={id}
                 aria-describedby={`${id}-error`}
                 aria-invalid={!!error}
+                id={id}
                 {...(inputProps as InputWithElementsProps)}
               />
             );
         }
       })()}
       {error && (
-        <p id={`${id}-error`} className="mt-1 text-sm text-destructive">
+        <p className="mt-1 text-sm text-destructive" id={`${id}-error`}>
           {error}
         </p>
       )}

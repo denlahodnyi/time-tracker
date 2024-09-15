@@ -32,6 +32,10 @@ router
   .get(taskController.getUserTasks.mount)
   .post(taskController.createUserTask.mount);
 router
+  .route('/tasks/search')
+  .all(requireAuth())
+  .get(taskController.searchUserTask.mount);
+router
   .route('/tasks/:taskId')
   .all(requireAuth())
   .get(taskController.getUserTaskById.mount)

@@ -17,9 +17,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
       <input
-        type={type}
-        className={cn(inputVariants({ className }))}
         ref={ref}
+        className={cn(inputVariants({ className }))}
+        type={type}
         {...props}
       />
     );
@@ -83,10 +83,10 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         type={isHidden ? 'password' : 'text'}
         rightElem={
           <Button
+            aria-label={isHidden ? 'show password' : 'hide password'}
+            className="h-auto p-0"
             type="button"
             variant="ghost"
-            className="h-auto p-0"
-            aria-label={isHidden ? 'show password' : 'hide password'}
             onClick={() => setIsHidden(!isHidden)}
           >
             {isHidden ? <EyeOffIcon /> : <EyeIcon />}
