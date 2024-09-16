@@ -9,7 +9,7 @@ function UserProfileForm() {
   const fetcher = useFetcher<typeof action>();
   const formErrors = fetcher.data?.errors;
   const protectedLoaderData = useRouteLoaderData<typeof loader>('routes/_p');
-  const { user } = protectedLoaderData || {};
+  const { user } = protectedLoaderData?.data || {};
   const errors = useFormErrors(formErrors, [
     'firstName',
     'lastName',

@@ -3,6 +3,7 @@ import {
   type ApiClient,
   type ClientRequestOptions,
   type ResponseData,
+  type ServiceMethodReturn,
   type UserCompleteTaskDTO,
   type UserCreateTaskDTO,
   type UserStartTaskDTO,
@@ -59,14 +60,16 @@ class TaskService {
 
     return {
       result: {
-        tasks: userTasksFromDto(data.data.tasks),
-        activeTask: data.data.activeTask
-          ? userTaskFromDto(data.data.activeTask)
-          : null,
-        pagination: data.data.pagination,
+        data: {
+          tasks: userTasksFromDto(data.data.tasks),
+          activeTask: data.data.activeTask
+            ? userTaskFromDto(data.data.activeTask)
+            : null,
+          pagination: data.data.pagination,
+        },
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async postMyTask(
@@ -90,7 +93,7 @@ class TaskService {
             : null,
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async updateMyTask(
@@ -126,7 +129,7 @@ class TaskService {
             : null,
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async startMyTask(
@@ -161,7 +164,7 @@ class TaskService {
             : null,
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async stopMyTask(
@@ -196,7 +199,7 @@ class TaskService {
             : null,
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async deleteTask(
@@ -226,7 +229,7 @@ class TaskService {
             : null,
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async completeTask(
@@ -262,7 +265,7 @@ class TaskService {
             : null,
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async getMyAnalytics(requestOptions?: ClientRequestOptions) {
@@ -274,9 +277,13 @@ class TaskService {
     if (data.status === 'error') throw new Error(data.error);
 
     return {
-      result: userTasksAnalyticsFromDto(data.data),
+      result: {
+        data: userTasksAnalyticsFromDto(data.data),
+        error: null,
+        errors: null,
+      },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async searchByName(
@@ -297,7 +304,14 @@ class TaskService {
 
     if (!data) throw new Error('Cannot find any task');
 
-    return { data, response };
+    return {
+      response,
+      result: {
+        data: data.status === 'success' ? data.data : null,
+        error: data.status === 'error' ? data.error : null,
+        errors: data.status === 'error' ? data.errors : null,
+      },
+    } satisfies ServiceMethodReturn;
   }
 }
 

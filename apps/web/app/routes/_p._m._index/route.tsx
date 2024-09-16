@@ -35,8 +35,12 @@ export async function clientLoader({
   const loaderData = await serverLoader<typeof loader>();
 
   return {
-    ...loaderData,
-    initialCursors: Array.from(cachedCursors), // client side field
+    data: loaderData.data
+      ? {
+          ...loaderData.data,
+          initialCursors: Array.from(cachedCursors), // client side field
+        }
+      : null,
   };
 }
 
@@ -68,9 +72,9 @@ export default function Index() {
         <TasksSearchForm />
       </div>
       <MyTasksList
-        activeTask={loaderData.activeTask}
-        initialCursors={loaderData.initialCursors}
-        initialPage={loaderData.initialPage}
+        activeTask={loaderData.data?.activeTask || null}
+        initialCursors={loaderData.data?.initialCursors || []}
+        initialPage={loaderData.data?.initialPage || null}
       />
     </div>
   );

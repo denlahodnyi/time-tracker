@@ -17,25 +17,32 @@ export async function getPaginatedUserTasks(
   const _count = typeof counterCookie === 'number' ? counterCookie + 1 : 1;
 
   return {
-    data: payload.cursor
-      ? {
-          isInitial: false as const,
-          tasks: result.tasks,
-          pagination: result.pagination,
-          activeTask: null,
-          initialPage: null,
-          initialCursors: [] as number[],
-          _count,
-        }
-      : {
-          isInitial: true as const,
-          tasks: null,
-          pagination: null,
-          activeTask: result.activeTask,
-          initialPage: { tasks: result.tasks, pagination: result.pagination },
-          initialCursors: [] as number[],
-          _count,
-        },
+    data: {
+      data: payload.cursor
+        ? {
+            isInitial: false as const,
+            tasks: result.data.tasks,
+            pagination: result.data.pagination,
+            activeTask: null,
+            initialPage: null,
+            initialCursors: [] as number[],
+            _count,
+          }
+        : {
+            isInitial: true as const,
+            tasks: null,
+            pagination: null,
+            activeTask: result.data.activeTask,
+            initialPage: {
+              tasks: result.data.tasks,
+              pagination: result.data.pagination,
+            },
+            initialCursors: [] as number[],
+            _count,
+          },
+      error: null,
+      errors: null,
+    },
     setCookie:
       getSetCookie(response) + (await tasksLoadCounterCookie.serialize(_count)),
   };

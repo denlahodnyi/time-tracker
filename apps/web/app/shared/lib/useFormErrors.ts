@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import getFormError from './getFormError';
-import type { FormErrors } from '../api/types';
+import type { FormErrors } from '../api';
 
 export default function useFormErrors(
   errors: FormErrors | null | undefined,

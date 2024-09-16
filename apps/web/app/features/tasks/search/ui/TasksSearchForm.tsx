@@ -20,8 +20,7 @@ import {
 
 export default function TasksSearchForm() {
   const fetcher = useFetcher<typeof loader>();
-  const suggestions =
-    fetcher.data?.status === 'success' ? fetcher.data.data.suggestions : [];
+  const suggestions = fetcher.data?.data ? fetcher.data.data.suggestions : [];
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);

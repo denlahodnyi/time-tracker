@@ -2,6 +2,7 @@ import { json, type LoaderFunctionArgs } from '@remix-run/node';
 
 import type { TasksFilterByUrlParam } from '~/entities/task';
 import { getPaginatedUserTasks } from '~/features/tasks/get-paginated-tasks/server';
+import type { ServerLoaderReturn } from '~/shared/api';
 import {
   TASK_SEARCH_URL_PARAM,
   TASKS_FILTER_URL_PARAM,
@@ -28,12 +29,9 @@ export default async function loader({ request }: LoaderFunctionArgs) {
       filterBy,
     });
 
-    return json(
-      { ...data, initialCursors: [] }, // initialCursors will be filled in clientLoader
-      {
-        headers: { 'Set-Cookie': setCookie },
-      },
-    );
+    return json(data, {
+      headers: { 'Set-Cookie': setCookie },
+    }) satisfies ServerLoaderReturn;
   } catch (err) {
     handleRequestError(err, request, { shouldThrowError: true });
   }
