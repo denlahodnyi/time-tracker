@@ -35,7 +35,7 @@ function ActiveTask(props: ActiveTaskProps) {
     !isLoading &&
     fetcher.data?.data?.task &&
     fetcher.data._action === STOP_TASK_ACTION;
-  const activeTask = loaderData.activeTask;
+  const activeTask = loaderData.data?.activeTask;
   const isInProgress = !!activeTask;
   const timeEntry = activeTask?.timeEntries?.[0];
   const formErrors = useFormErrors(errors, ['name']);

@@ -19,7 +19,8 @@ export default function MainHeader() {
   const location = useLocation();
 
   const protectedLoaderData = useRouteLoaderData<typeof loader>('routes/_p');
-  const { firstName = '', lastName = '' } = protectedLoaderData?.user || {};
+  const { firstName = '', lastName = '' } =
+    protectedLoaderData?.data?.user || {};
   const avatarFallback = `${firstName.at(0)}${lastName?.at(0) || ''}`;
 
   return (

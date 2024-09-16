@@ -2,6 +2,7 @@ import { useFetcher } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 
 import { CREATE_TASK_ACTION } from '~/features/tasks/create-task';
+import type action from '~/routes/_p._m._index/action.server';
 import { useFormErrors } from '~/shared/lib';
 import {
   Dialog,
@@ -14,7 +15,6 @@ import {
   Button,
   useErrorAlert,
 } from '~/shared/ui';
-import type action from './action.server';
 
 interface TaskDetailsDialogProps {
   children: React.ReactNode;

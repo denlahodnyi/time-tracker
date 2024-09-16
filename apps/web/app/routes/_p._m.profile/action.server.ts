@@ -1,6 +1,7 @@
 import { json, type ActionFunctionArgs } from '@remix-run/node';
 
 import { userApi, type UserPayload } from '~/entities/user';
+import type { ServerActionReturn } from '~/shared/api';
 import { logout } from '~/shared/api/server';
 import { getCookie, getSetCookie, parseRequestFormData } from '~/shared/lib';
 import {
@@ -31,11 +32,14 @@ export default async function action({ request }: ActionFunctionArgs) {
         },
       );
 
-      return json(result, {
-        headers: {
-          'Set-Cookie': getSetCookie(response),
+      return json(
+        { ...result, _action: 'updateUser' },
+        {
+          headers: {
+            'Set-Cookie': getSetCookie(response),
+          },
         },
-      });
+      ) satisfies ServerActionReturn;
     } else if (formData._action === 'deleteUser') {
       const { result, response } = await userApi.services.deleteCurrentUser({
         fetchOpts: {
@@ -47,13 +51,18 @@ export default async function action({ request }: ActionFunctionArgs) {
         logout(request);
       } else {
         return json(
-          { data: null, error: result.error, errors: result.errors },
+          {
+            data: null,
+            error: result.error,
+            errors: result.errors,
+            _action: 'deleteUser',
+          },
           {
             headers: {
               'Set-Cookie': getSetCookie(response),
             },
           },
-        );
+        ) satisfies ServerActionReturn;
       }
     }
 

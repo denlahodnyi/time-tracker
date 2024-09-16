@@ -33,6 +33,7 @@ import {
   type UpdateMyTaskParsedFormData,
   updateUserTask,
 } from '~/features/tasks/update-task/server';
+import type { ServerActionReturn } from '~/shared/api';
 import { parseRequestFormData } from '~/shared/lib';
 import {
   handleRequestError,
@@ -60,42 +61,42 @@ export default async function action({ request }: ActionFunctionArgs) {
 
         return json(data, {
           headers: { 'Set-Cookie': setCookie },
-        });
+        }) satisfies ServerActionReturn;
       }
       case UPDATE_TASK_ACTION: {
         const { data, setCookie } = await updateUserTask(formData, request);
 
         return json(data, {
           headers: { 'Set-Cookie': setCookie },
-        });
+        }) satisfies ServerActionReturn;
       }
       case DELETE_TASK_ACTION: {
         const { data, setCookie } = await deleteUserTask(formData, request);
 
         return json(data, {
           headers: { 'Set-Cookie': setCookie },
-        });
+        }) satisfies ServerActionReturn;
       }
       case START_TASK_ACTION: {
         const { data, setCookie } = await startTask(formData, request);
 
         return json(data, {
           headers: { 'Set-Cookie': setCookie },
-        });
+        }) satisfies ServerActionReturn;
       }
       case STOP_TASK_ACTION: {
         const { data, setCookie } = await stopTask(formData, request);
 
         return json(data, {
           headers: { 'Set-Cookie': setCookie },
-        });
+        }) satisfies ServerActionReturn;
       }
       case COMPLETE_TASK_ACTION: {
         const { data, setCookie } = await completeTask(formData, request);
 
         return json(data, {
           headers: { 'Set-Cookie': setCookie },
-        });
+        }) satisfies ServerActionReturn;
       }
       default: {
         throw new Error('Undefined action');

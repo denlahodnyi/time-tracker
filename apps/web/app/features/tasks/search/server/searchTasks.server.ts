@@ -1,4 +1,5 @@
 import { taskApi, type TasksFilterByUrlParam } from '~/entities/task';
+import type { ServerActionHandlerReturn } from '~/shared/api';
 import { TASKS_FILTER_URL_PARAM } from '~/shared/constants';
 import { getCookie, getSetCookie } from '~/shared/lib';
 
@@ -9,7 +10,7 @@ export async function searchTasks(req: Request) {
     (searchParams.get(TASKS_FILTER_URL_PARAM) as TasksFilterByUrlParam) ||
     undefined;
 
-  const { data, response } = await taskApi.services.searchByName(
+  const { result, response } = await taskApi.services.searchByName(
     { name: encodeURIComponent(taskName), filterBy },
     {
       fetchOpts: {
@@ -18,5 +19,8 @@ export async function searchTasks(req: Request) {
     },
   );
 
-  return { data, setCookie: getSetCookie(response) };
+  return {
+    data: { ...result, _action: 'searchTasks' },
+    setCookie: getSetCookie(response),
+  } satisfies ServerActionHandlerReturn;
 }

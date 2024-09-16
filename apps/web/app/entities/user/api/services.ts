@@ -3,6 +3,7 @@ import {
   type ApiClient,
   type ClientRequestOptions,
   type ResponseData,
+  type ServiceMethodReturn,
 } from '~/shared/api';
 import { dtoToUser } from './dto';
 import type { UserPayload, UserSuccessData } from '../model';
@@ -19,7 +20,16 @@ class UserService {
       throw new Error(data?.error || 'Cannot fetch current user');
     }
 
-    return { user: dtoToUser(data.data.user), response };
+    return {
+      result: {
+        data: {
+          user: dtoToUser(data.data.user),
+        },
+        error: null,
+        errors: null,
+      },
+      response,
+    } satisfies ServiceMethodReturn;
   }
 
   async updateCurrentUser(
@@ -49,7 +59,7 @@ class UserService {
             : null,
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 
   async deleteCurrentUser(requestOptions?: ClientRequestOptions) {
@@ -73,7 +83,7 @@ class UserService {
             : null,
       },
       response,
-    };
+    } satisfies ServiceMethodReturn;
   }
 }
 

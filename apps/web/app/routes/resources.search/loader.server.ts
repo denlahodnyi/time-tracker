@@ -1,6 +1,7 @@
 import { json, type LoaderFunctionArgs } from '@remix-run/node';
 
 import { searchTasks } from '~/features/tasks/search/server';
+import type { ServerActionReturn } from '~/shared/api';
 import {
   handleRequestError,
   requireAuthRequest,
@@ -14,7 +15,7 @@ export default async function loader({ request }: LoaderFunctionArgs) {
 
     return json(data, {
       headers: { 'Set-Cookie': setCookie },
-    });
+    }) satisfies ServerActionReturn;
   } catch (error) {
     return handleRequestError(error, request);
   }

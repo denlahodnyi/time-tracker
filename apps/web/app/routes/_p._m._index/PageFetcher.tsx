@@ -5,7 +5,7 @@ import { useEnhancedFetcher } from '~/shared/lib';
 import type loader from './loader.server';
 
 export interface PageFetcherSuccess
-  extends Extract<SerializeFrom<typeof loader>, { isInitial: true }> {}
+  extends Extract<SerializeFrom<typeof loader>['data'], { isInitial: true }> {}
 
 export default function PageFetcher({
   cursor,
@@ -16,9 +16,9 @@ export default function PageFetcher({
 }) {
   const fetcher = useEnhancedFetcher<typeof loader>({
     key: cursor.toString(),
-    checkSuccess: (data) => Boolean(data.tasks),
+    checkSuccess: (data) => Boolean(data.data.tasks),
     onSuccess: (data) => {
-      onSuccess(data as PageFetcherSuccess);
+      onSuccess(data.data as PageFetcherSuccess);
     },
   });
 

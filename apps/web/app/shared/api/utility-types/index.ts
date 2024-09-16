@@ -1,3 +1,7 @@
+import type { TypedResponse } from '@remix-run/node';
+
+import type { ClientRequestOptions } from '../client';
+
 type RouteParts<
   TParams extends
     | { params: Record<string, unknown>; query?: Record<string, unknown> }
@@ -53,3 +57,33 @@ export interface CursorPagination {
   prevCursor: number | null;
   nextCursor: number | null;
 }
+
+export type ServiceMethod<TArgs extends unknown[] = [], TData = null> = (
+  ...args: [...TArgs, ClientRequestOptions?]
+) => Promise<{
+  result: { data: TData; error?: string | null; errors?: FormErrors | null };
+  response: Response;
+}>;
+
+export interface ServiceMethodReturn<TData = unknown> {
+  result: { data: TData; error?: string | null; errors?: FormErrors | null };
+  response: Response;
+}
+
+export interface ServerActionHandlerReturn<TData = unknown> {
+  setCookie: string;
+  data: ServiceMethodReturn<TData>['result'] & { _action: string };
+}
+
+export interface ServerLoaderHandlerReturn<TData = unknown> {
+  setCookie: string;
+  data: ServiceMethodReturn<TData>['result'];
+}
+
+export type ServerActionReturn<TData = unknown> = TypedResponse<
+  ServerActionHandlerReturn<TData>['data']
+>;
+
+export type ServerLoaderReturn<TData = unknown> = TypedResponse<
+  ServerLoaderHandlerReturn<TData>['data']
+>;

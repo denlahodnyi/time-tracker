@@ -1,4 +1,5 @@
 import { MyTaskCreatePayload, taskApi } from '~/entities/task';
+import type { ServerActionHandlerReturn } from '~/shared/api';
 import { createTaskCountCookie } from '~/shared/api/server';
 import { getCookie, getSetCookie } from '~/shared/lib';
 import { CREATE_TASK_ACTION, START_NEW_TASK_ACTION } from '../lib';
@@ -21,10 +22,11 @@ export async function createUserTask(
 
   const counterCookie = await createTaskCountCookie.parse(cookie);
   const _count = typeof counterCookie === 'number' ? counterCookie + 1 : 1;
+  const data = { ...result, _action, _count };
 
   return {
-    data: { ...result, _action, _count },
+    data,
     setCookie:
       getSetCookie(response) + (await createTaskCountCookie.serialize(_count)),
-  };
+  } satisfies ServerActionHandlerReturn;
 }

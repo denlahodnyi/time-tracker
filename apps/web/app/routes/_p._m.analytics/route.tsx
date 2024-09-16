@@ -6,6 +6,7 @@ import { Bar, BarChart } from 'recharts';
 
 import { formatTotalTimeSpent } from '~/entities/task/lib';
 import { getAnalytics } from '~/features/tasks/analytics/server';
+import type { ServerLoaderReturn } from '~/shared/api';
 import { msToDuration } from '~/shared/lib';
 import {
   handleRequestError,
@@ -29,7 +30,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       headers: {
         'Set-Cookie': setCookie,
       },
-    });
+    }) satisfies ServerLoaderReturn;
   } catch (err) {
     handleRequestError(err, request, { shouldThrowError: true });
   }
@@ -37,38 +38,40 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function AnalyticsPage() {
   const loaderData = useLoaderData<typeof loader>();
+  const {
+    todayTotalTimeSpent,
+    topLongest,
+    topShortest,
+    totalAvgTimeSpent,
+    totalTasks,
+    weekTotalTimeSpent,
+  } = loaderData.data;
 
   const topLongestChartConfig = useMemo(() => {
     return {
       totalTimeSpent: {
         label: 'Time spent',
       },
-      ...loaderData.topLongest.reduce<Record<number, { label: string }>>(
-        (acc, task) => {
-          acc[task.taskId] = { label: truncate(task.name, { length: 26 }) };
+      ...topLongest.reduce<Record<number, { label: string }>>((acc, task) => {
+        acc[task.taskId] = { label: truncate(task.name, { length: 26 }) };
 
-          return acc;
-        },
-        {},
-      ),
+        return acc;
+      }, {}),
     } satisfies ChartConfig;
-  }, [loaderData.topLongest]);
+  }, [topLongest]);
 
   const topShortestChartConfig = useMemo(() => {
     return {
       totalTimeSpent: {
         label: 'Time spent',
       },
-      ...loaderData.topShortest.reduce<Record<number, { label: string }>>(
-        (acc, task) => {
-          acc[task.taskId] = { label: truncate(task.name, { length: 26 }) };
+      ...topShortest.reduce<Record<number, { label: string }>>((acc, task) => {
+        acc[task.taskId] = { label: truncate(task.name, { length: 26 }) };
 
-          return acc;
-        },
-        {},
-      ),
+        return acc;
+      }, {}),
     } satisfies ChartConfig;
-  }, [loaderData.topShortest]);
+  }, [topShortest]);
 
   const toolTipValueFormatter = useCallback(
     (value: unknown) =>
@@ -81,15 +84,14 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-sm border border-border p-4 py-5 text-center">
           <p className="text-xl md:text-3xl">
-            You have <b>{loaderData.totalTasks}</b> tasks
+            You have <b>{totalTasks}</b> tasks
           </p>
         </div>
         <div className="rounded-sm border border-border p-4 py-5 text-center">
           <p className="text-xl md:text-3xl">
-            {loaderData.todayTotalTimeSpent ? (
+            {todayTotalTimeSpent ? (
               <span>
-                <b>{formatTimeSpentToday(loaderData.todayTotalTimeSpent)}</b>{' '}
-                spent today
+                <b>{formatTimeSpentToday(todayTotalTimeSpent)}</b> spent today
               </span>
             ) : (
               'No tasks were active today'
@@ -98,10 +100,10 @@ export default function AnalyticsPage() {
         </div>
         <div className="rounded-sm border border-border p-4 py-5 text-center">
           <p className="text-xl md:text-3xl">
-            {loaderData.weekTotalTimeSpent ? (
+            {weekTotalTimeSpent ? (
               <span>
-                <b>{formatTimeSpentForWeek(loaderData.weekTotalTimeSpent)}</b>{' '}
-                spent this week
+                <b>{formatTimeSpentForWeek(weekTotalTimeSpent)}</b> spent this
+                week
               </span>
             ) : (
               'There is no progress for this week'
@@ -110,7 +112,7 @@ export default function AnalyticsPage() {
         </div>
         <div className="rounded-sm border border-border p-4 py-5 text-center">
           <p className="text-xl md:text-3xl">
-            <b>{formatAvgTime(loaderData.totalAvgTimeSpent)}</b> Avg
+            <b>{formatAvgTime(totalAvgTimeSpent)}</b> Avg
           </p>
         </div>
         <div className="rounded-sm border border-border p-4 py-5">
@@ -120,11 +122,11 @@ export default function AnalyticsPage() {
           <p className="mb-3 text-center text-muted-foreground">
             (Hover to see details)
           </p>
-          {loaderData.topLongest.length ? (
+          {topLongest.length ? (
             <ChartContainer config={topLongestChartConfig}>
               <BarChart
                 accessibilityLayer
-                data={loaderData.topLongest}
+                data={topLongest}
                 layout="horizontal"
               >
                 <ChartTooltip
@@ -152,11 +154,11 @@ export default function AnalyticsPage() {
           <p className="mb-3 text-center text-muted-foreground">
             (Hover to see details)
           </p>
-          {loaderData.topShortest.length ? (
+          {topShortest.length ? (
             <ChartContainer config={topShortestChartConfig}>
               <BarChart
                 accessibilityLayer
-                data={loaderData.topShortest}
+                data={topShortest}
                 layout="horizontal"
               >
                 <ChartTooltip
