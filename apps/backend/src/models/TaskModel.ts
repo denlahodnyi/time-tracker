@@ -127,7 +127,9 @@ export default class Task extends ModelBase {
     parseUserId(userId);
     z.object({
       task_id: z.number().optional(),
-    }).parse(options?.query?.taskId);
+    }).parse({
+      task_id: options?.query?.taskId,
+    });
 
     const { pagination, includeActiveTask, query } = options || {};
     const { limit = LIMIT, cursor } = pagination || {};
@@ -371,7 +373,6 @@ export default class Task extends ModelBase {
 
     const active = await this.client.timeEntries.findFirst({
       where: {
-        taskId,
         userId,
         finishedAt: null,
         NOT: {
@@ -380,10 +381,20 @@ export default class Task extends ModelBase {
       },
     });
 
-    if (active) {
+    if (active?.taskId === taskId) {
       throw errorFactory.create('bad_request', {
         message: 'Task is already in progress',
       });
+    } else if (active) {
+      await this.stop(
+        userId,
+        active.taskId,
+        {
+          finishedAt: data.startedAt,
+          entryId: active.id,
+        },
+        { skipTotalTimeSpent: true },
+      );
     }
 
     const [task, timeSpent] = await Promise.all([
@@ -433,7 +444,10 @@ export default class Task extends ModelBase {
     userId: number,
     taskId: number,
     data: z.infer<typeof StopEventInput>,
+    options?: { skipTotalTimeSpent: boolean },
   ) {
+    const { skipTotalTimeSpent = false } = options || {};
+
     parseUserId(userId);
     parseTaskId(taskId);
     StopEventInput.parse(data);
@@ -478,7 +492,9 @@ export default class Task extends ModelBase {
       },
     });
 
-    const timeSpent = await this.client.task.getTotalTimeSpent(userId, taskId);
+    const timeSpent = !skipTotalTimeSpent
+      ? await this.client.task.getTotalTimeSpent(userId, taskId)
+      : null;
 
     if (task && timeSpent) {
       task.totalTimeSpent = timeSpent;

@@ -57,10 +57,14 @@ const calcSpentTime = (start: Date, msSpent: number) => {
 };
 
 function TaskTimer({ startDate, totalTimeSpent, ...props }: TaskTimerProps) {
-  const [start] = useState(() => startDate ?? new Date());
+  const [start, setStart] = useState(() => startDate ?? new Date());
   const [timer, setTimer] = useState(() =>
     calcSpentTime(start, totalTimeSpent),
   );
+
+  useEffect(() => {
+    setStart(startDate || new Date());
+  }, [startDate]);
 
   useEffect(() => {
     const timerId = setInterval(() => {

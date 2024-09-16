@@ -665,7 +665,7 @@ describe('/tasks', () => {
       });
     });
 
-    it('returns 400 status code and error status with message when starting already started task', async () => {
+    it('returns 400 status code and error status with message when starting already active task', async () => {
       HttpTestContext.assertClient(httpCtx.client);
 
       const { agent, createdUser } = await httpCtx.getAuthAgent();
@@ -689,6 +689,42 @@ describe('/tasks', () => {
 
       expect(status).toBe(400);
       getErrorResponseExpects(body);
+    });
+
+    it('successfully starts new task and finishes another active one', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const tasks = await taskFactory.createList(
+        2,
+        {},
+        { transient: { client: httpCtx.client, userId: createdUser.id } },
+      );
+      const startedAt = new Date().toISOString();
+
+      const { body: prevActiveRes } = await agent
+        .patch(`/api/tasks/${tasks[0].id}/event`)
+        .send({
+          event: 'start',
+          startedAt,
+        });
+
+      const { status } = await agent
+        .patch(`/api/tasks/${tasks[1].id}/event`)
+        .send({
+          event: 'start',
+          startedAt,
+        });
+
+      const prevActive = await httpCtx.client.timeEntries.findFirst({
+        where: {
+          id: prevActiveRes.data.task.timeEntries[0].id,
+          finishedAt: null,
+        },
+      });
+
+      expect(status).toBe(200);
+      expect(prevActive).toBeNull();
     });
 
     it('returns 200 status code and task with time entry for successfully completed task', async () => {
