@@ -6,4 +6,4 @@ Build it before using on both web and backend
 pnpm build
 ```
 
-Migrations must be used from "backend" folder to grab required env variables
+Migrations and seeding be used from "backend" folder to grab required env variables
