@@ -8,19 +8,25 @@ export type FetcherWithComponentsReset<T> = FetcherWithComponents<
   reset: () => void;
 };
 
-type FetcherOptions<T> = Parameters<typeof useFetcher>[0] & {
-  checkSuccess?: (fetcherData: NonNullable<SerializeFrom<T>>) => boolean;
-  onSuccess?: (fetcherData: NonNullable<SerializeFrom<T>>) => void;
-};
+type RemixFetcherOpts = Parameters<typeof useFetcher>[0];
+type FetcherOptions<T> = RemixFetcherOpts &
+  (
+    | {
+        onSuccess: (fetcherData: NonNullable<SerializeFrom<T>>) => void;
+        checkSuccess: (fetcherData: NonNullable<SerializeFrom<T>>) => boolean;
+        getSuccessDataCount: (
+          fetcherData: NonNullable<SerializeFrom<T>>,
+        ) => number | null;
+      }
+    | {
+        // All three must be used or none
+        onSuccess?: null;
+        checkSuccess?: null;
+        getSuccessDataCount?: null;
+      }
+  );
 
-const getSuccessDataCount = (data?: object | null) => {
-  if (data && '_count' in data) {
-    return data._count as undefined | null | number;
-  }
-
-  return null;
-};
-
+// TODO: this how to enhance
 export function useEnhancedFetcher<T>(
   opts: FetcherOptions<T>,
 ): FetcherWithComponentsReset<T> {
@@ -28,25 +34,29 @@ export function useEnhancedFetcher<T>(
   const [data, setData] = useState(fetcher.data);
   // Counter is used to distinguish fetcher responses
   const [count, setCount] = useState<number>(() =>
-    fetcher.data ? getSuccessDataCount(fetcher.data) ?? 0 : 0,
+    fetcher.data && opts.onSuccess && opts.getSuccessDataCount
+      ? opts.getSuccessDataCount(fetcher.data) ?? 0
+      : 0,
   );
 
   useEffect(() => {
     if (fetcher.state === 'idle' && fetcher.data) {
       setData(fetcher.data);
 
-      const _count = getSuccessDataCount(fetcher.data);
+      if (opts.onSuccess && opts.getSuccessDataCount) {
+        const _count = opts.getSuccessDataCount(fetcher.data);
 
-      if (_count != null && _count !== count) {
-        setCount(_count);
+        if (_count != null && _count !== count) {
+          setCount(_count);
 
-        if (
-          opts &&
-          opts.checkSuccess &&
-          opts.onSuccess &&
-          opts.checkSuccess(fetcher.data)
-        ) {
-          opts.onSuccess(fetcher.data);
+          if (
+            opts &&
+            opts.checkSuccess &&
+            opts.onSuccess &&
+            opts.checkSuccess(fetcher.data)
+          ) {
+            opts.onSuccess(fetcher.data);
+          }
         }
       }
     }

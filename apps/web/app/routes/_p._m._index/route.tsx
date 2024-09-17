@@ -35,6 +35,7 @@ export async function clientLoader({
   const loaderData = await serverLoader<typeof loader>();
 
   return {
+    ...loaderData,
     data: loaderData.data
       ? {
           ...loaderData.data,

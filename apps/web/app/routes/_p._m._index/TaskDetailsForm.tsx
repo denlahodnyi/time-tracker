@@ -18,9 +18,8 @@ function TaskDetailsForm(props: TaskDetailsFormProps) {
   const fetcher = useEnhancedFetcher<typeof action>({
     key: UPDATE_TASK_ACTION,
     checkSuccess: (data) => Boolean(data.data?.task),
-    onSuccess: () => {
-      onUpdated();
-    },
+    getSuccessDataCount: (data) => (data.data !== null && data._count) || null,
+    onSuccess: () => onUpdated(),
   });
   const fetcherData = fetcher.data;
   const isLoading = fetcher.state !== 'idle';

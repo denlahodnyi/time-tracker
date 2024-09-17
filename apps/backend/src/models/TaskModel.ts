@@ -185,6 +185,10 @@ export default class Task extends ModelBase {
           include: {
             users: true,
             timeEntries: {
+              where: {
+                startedAt: { not: null },
+                finishedAt: null,
+              },
               orderBy: {
                 createdAt: 'desc',
               },
