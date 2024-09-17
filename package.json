@@ -17,6 +17,7 @@
     "api:start": "pnpm -F backend start",
     "api:test:unit": "pnpm -F backend test:unit",
     "api:test:int": "pnpm -F backend test:int",
+    "api:seed:dev": "pnpm -F backend seed:dev",
     "web:dev": "pnpm -F web dev",
     "web:build": "pnpm -F web build",
     "web:start": "pnpm -F web start",

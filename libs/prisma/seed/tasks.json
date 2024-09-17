@@ -1,0 +1,176 @@
+[
+  {
+    "name": "Build a house",
+    "completed": false,
+    "time": [
+      { "start": "2024-06-2T12:00:00Z", "finish": "2024-06-3T15:00:00Z" },
+      { "start": "2024-08-1T13:00:00Z", "finish": "2024-08-1T21:00:00Z" }
+    ]
+  },
+  {
+    "name": "Make a coffee",
+    "completed": false,
+    "time": [
+      { "start": "2024-09-1T10:00:00Z", "finish": "2024-09-1T11:00:00Z" }
+    ]
+  },
+  {
+    "name": "Sell an old TV",
+    "completed": true,
+    "time": [
+      { "start": "2024-08-10T12:00:00Z", "finish": "2024-08-10T18:00:00Z" }
+    ]
+  },
+  {
+    "name": "Design website for my blog",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Write a poem",
+    "completed": false,
+    "time": [
+      { "start": "2024-08-20T12:00:00Z", "finish": "2024-08-20T16:00:00Z" }
+    ]
+  },
+  {
+    "name": "Paint a picture",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Go on city tour",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Read some Shakespeare's plays",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Make a pie",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-10T09:00:00Z",
+        "finish": "2024-09-10T10:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Clean the garage",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Write project report",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-11T11:00:00Z",
+        "finish": "2024-09-11T12:30:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Fix the bike",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Plan vacation itinerary",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-12T13:00:00Z",
+        "finish": "2024-09-12T14:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Update resume",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-13T15:00:00Z",
+        "finish": "2024-09-13T15:45:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Prepare presentation slides",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-14T16:00:00Z",
+        "finish": "2024-09-14T18:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Wash the car",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-15T09:30:00Z",
+        "finish": "2024-09-15T10:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Grocery shopping",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Learn a new recipe",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Repair kitchen sink",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Watch a documentary",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-16T20:00:00Z",
+        "finish": "2024-09-16T21:30:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Paint the living room",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Prepare a financial budget",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-17T17:00:00Z",
+        "finish": "2024-09-17T19:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "Exercise at the gym",
+    "completed": false,
+    "time": []
+  },
+  {
+    "name": "Backup computer files",
+    "completed": false,
+    "time": [
+      {
+        "start": "2024-09-18T08:00:00Z",
+        "finish": "2024-09-18T08:30:00Z"
+      }
+    ]
+  }
+]

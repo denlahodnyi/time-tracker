@@ -66,3 +66,22 @@ pnpm test:int
    ```sh
    pnpm start
    ```
+
+## Seeding
+
+Database seeding happens in two ways with Prisma ORM: manually with `prisma db
+seed` and automatically in `prisma migrate reset` and (in some scenarios) `prisma
+migrate dev`.
+
+To seed development DB run:
+
+```sh
+pnpm seed:dev
+```
+
+Available users:
+
+| email          | password |
+| -------------- | -------- |
+| <den@dev.dev>  | 12345    |
+| <jack@dev.dev> | 12345    |

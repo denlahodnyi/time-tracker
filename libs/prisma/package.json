@@ -15,14 +15,28 @@
     "push": "pnpm prisma db push",
     "format": "pnpm prisma format",
     "migrate:status": "pnpm prisma migrate status",
-    "migrate:dev": "pnpm prisma migrate dev"
+    "migrate:dev": "pnpm prisma migrate dev",
+    "postmigrate:dev": "pnpm seed-client:sync",
+    "reset": "pnpm prisma migrate reset",
+    "seed": "tsx seed/index.ts",
+    "seed:dev": "tsx seed/index.ts --environment development",
+    "seed-client:sync": "pnpm dlx @snaplet/seed sync",
+    "seed-client:generate": "pnpm dlx @snaplet/seed generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.15.0"
+    "@prisma/client": "^5.15.0",
+    "bcrypt": "^5.1.1"
   },
   "devDependencies": {
+    "@snaplet/copycat": "^5.0.0",
+    "@snaplet/seed": "0.98.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.12.12",
     "prisma": "^5.15.0",
-    "tsup": "^8.1.0"
+    "tsup": "^8.1.0",
+    "tsx": "^4.19.1"
+  },
+  "@snaplet/seed": {
+    "config": "seed/seed.config.ts"
   }
 }
