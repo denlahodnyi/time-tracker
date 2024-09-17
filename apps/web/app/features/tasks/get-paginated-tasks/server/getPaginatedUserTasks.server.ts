@@ -26,7 +26,6 @@ export async function getPaginatedUserTasks(
             activeTask: null,
             initialPage: null,
             initialCursors: [] as number[],
-            _count,
           }
         : {
             isInitial: true as const,
@@ -38,8 +37,8 @@ export async function getPaginatedUserTasks(
               pagination: result.data.pagination,
             },
             initialCursors: [] as number[],
-            _count,
           },
+      _count,
       error: null,
       errors: null,
     },

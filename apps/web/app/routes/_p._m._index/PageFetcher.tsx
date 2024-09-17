@@ -3,9 +3,12 @@ import { useEffect } from 'react';
 
 import { useEnhancedFetcher } from '~/shared/lib';
 import type loader from './loader.server';
+import type { clientLoader } from './route';
+
+type Loader = typeof loader & typeof clientLoader;
 
 export interface PageFetcherSuccess
-  extends Extract<SerializeFrom<typeof loader>['data'], { isInitial: true }> {}
+  extends Extract<SerializeFrom<Loader>['data'], { isInitial: true }> {}
 
 export default function PageFetcher({
   cursor,
@@ -14,12 +17,11 @@ export default function PageFetcher({
   cursor: number;
   onSuccess: (d: PageFetcherSuccess) => void;
 }) {
-  const fetcher = useEnhancedFetcher<typeof loader>({
+  const fetcher = useEnhancedFetcher<Loader>({
     key: cursor.toString(),
-    checkSuccess: (data) => Boolean(data.data.tasks),
-    onSuccess: (data) => {
-      onSuccess(data.data as PageFetcherSuccess);
-    },
+    checkSuccess: (data) => Boolean(data.data?.tasks),
+    getSuccessDataCount: (data) => data._count,
+    onSuccess: (data) => onSuccess(data.data as PageFetcherSuccess),
   });
 
   const fetcherLoad = fetcher.load;

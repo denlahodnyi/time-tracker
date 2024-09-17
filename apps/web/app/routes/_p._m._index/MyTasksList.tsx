@@ -34,6 +34,7 @@ function MyTasksList(props: MyTasksListProps) {
   useEnhancedFetcher<typeof action>({
     key: UPDATE_TASK_ACTION,
     checkSuccess: (data) => Boolean(data.data?.task),
+    getSuccessDataCount: (data) => (data.data !== null && data._count) || null,
     // Reset pages to trigger revalidation in useEffect
     onSuccess: () => setPages([]),
   });
@@ -41,6 +42,7 @@ function MyTasksList(props: MyTasksListProps) {
   useEnhancedFetcher<typeof action>({
     key: DELETE_TASK_ACTION,
     checkSuccess: (data) => Boolean(data.data?.task),
+    getSuccessDataCount: (data) => (data.data !== null && data._count) || null,
     // Reset pages to trigger revalidation in useEffect
     onSuccess: () => setPages([]),
   });
@@ -48,6 +50,7 @@ function MyTasksList(props: MyTasksListProps) {
   useEnhancedFetcher<typeof action>({
     key: COMPLETE_TASK_ACTION,
     checkSuccess: (data) => Boolean(data.data?.task),
+    getSuccessDataCount: (data) => (data.data !== null && data._count) || null,
     // Reset pages to trigger revalidation in useEffect
     onSuccess: () => setPages([]),
   });
