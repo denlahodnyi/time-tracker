@@ -14,7 +14,9 @@ import { ConnectionUrlBuilder } from '../../../db/utils/ConnectionUrlBuilder.js'
 import userFactory from './userFactory.js';
 
 const execAsync = util.promisify(exec);
+
 const LOGIN_ROUTE = '/api/signin';
+const CREATE_DB_SCRIPT = 'pnpm db:push --skip-generate';
 
 export default class HttpTestContext {
   protected randName!: string;
@@ -142,16 +144,12 @@ export default class HttpTestContext {
       });
 
       // Fill new database schema with tables
-      const { /* stdout,  */ stderr } = await execAsync(
-        // TODO: check whether it can be invoked from separate file
-        'pnpm -F @libs/prisma push --skip-generate',
-        {
-          env: {
-            ...process.env,
-            DATABASE_URL: databaseUrl,
-          },
+      const { /* stdout,  */ stderr } = await execAsync(CREATE_DB_SCRIPT, {
+        env: {
+          ...process.env,
+          DATABASE_URL: databaseUrl,
         },
-      );
+      });
 
       if (stderr) {
         throw new Error(
