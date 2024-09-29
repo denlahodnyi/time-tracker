@@ -6,7 +6,11 @@ import {
   type ServiceMethodReturn,
 } from '~/shared/api';
 import { dtoToUser } from './dto';
-import type { UserPayload, UserSuccessData } from '../model';
+import type {
+  AvatarUploadPayload,
+  UserPayload,
+  UserSuccessData,
+} from '../model';
 
 class UserService {
   constructor(private client: ApiClient) {}
@@ -83,6 +87,60 @@ class UserService {
             : null,
       },
       response,
+    } satisfies ServiceMethodReturn;
+  }
+
+  async uploadAvatar(
+    payload: AvatarUploadPayload,
+    requestOptions?: ClientRequestOptions,
+  ) {
+    const formData = new FormData();
+
+    formData.append('avatar', payload.avatar);
+
+    const { data, response } = await this.client.post<
+      ResponseData<UserSuccessData>,
+      FormData
+    >(constructEndpoint('/users/me/avatar'), formData, {
+      ...(requestOptions || {}),
+      fetchOpts: {
+        ...(requestOptions?.fetchOpts || {}),
+        method: 'PUT',
+      },
+    });
+
+    if (!data) throw new Error('Some error happen during avatar upload');
+
+    return {
+      response,
+      result: {
+        data:
+          data.status === 'success'
+            ? { user: dtoToUser(data.data.user) }
+            : null,
+        error: data.status === 'success' ? null : data.error,
+        errors: data.status === 'success' ? null : data.errors,
+      },
+    } satisfies ServiceMethodReturn;
+  }
+
+  async deleteAvatar(requestOptions?: ClientRequestOptions) {
+    const { data, response } = await this.client.delete<
+      ResponseData<UserSuccessData>
+    >(constructEndpoint('/users/me/avatar'), requestOptions);
+
+    if (!data) throw new Error('Some error happen during avatar deleting');
+
+    return {
+      response,
+      result: {
+        data:
+          data.status === 'success'
+            ? { user: dtoToUser(data.data.user) }
+            : null,
+        error: data.status === 'success' ? null : data.error,
+        errors: data.status === 'success' ? null : data.errors,
+      },
     } satisfies ServiceMethodReturn;
   }
 }

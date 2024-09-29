@@ -27,6 +27,7 @@ const requireAuth = (options?: Options): Handler =>
     if (
       !jwtPayload.userId ||
       (options?.verifyAccessByParam &&
+        req.params[options.verifyAccessByParam] !== 'me' &&
         Number(req.params[options.verifyAccessByParam]) !== jwtPayload.userId)
     ) {
       throw errorFactory.create('forbidden');

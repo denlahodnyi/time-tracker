@@ -7,6 +7,10 @@ export interface UserBase {
   fullName: string;
   email: string;
   bio: string;
+  avatarUrls: {
+    original: string;
+    thumbnail: string;
+  };
 }
 
 export interface SignUpReturn {
@@ -37,3 +41,7 @@ export type UserPayload = Pick<
   UserDTO,
   'firstName' | 'lastName' | 'email' | 'bio'
 >;
+
+export interface AvatarUploadPayload {
+  avatar: File | Blob;
+}

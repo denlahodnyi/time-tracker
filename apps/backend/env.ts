@@ -19,6 +19,10 @@ const EnvSchema = z.object({
   DB_SCHEMA: z.string().min(1).default('public'),
   DATABASE_URL: z.string().url(),
   CORS_ORIGIN: z.string().url().optional(),
+  AWS_S3_ACCESS_KEY_ID: z.string().min(1),
+  AWS_S3_SECRET_ACCESS_KEY: z.string().min(1),
+  AWS_S3_BUCKET_NAME: z.string().min(1),
+  AWS_S3_REGION: z.string().min(1),
 });
 
 const env: z.infer<typeof EnvSchema> = initializeEnvs();

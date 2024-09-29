@@ -1,3 +1,8 @@
 import type { User } from '@libs/prisma';
 
-export type UserDTO = Omit<User, 'password'>;
+export interface UserDTO extends Omit<User, 'password'> {
+  avatarUrls: {
+    original: string | null;
+    thumbnail: string | null;
+  };
+}

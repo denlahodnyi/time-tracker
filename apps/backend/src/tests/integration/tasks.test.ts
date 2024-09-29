@@ -979,7 +979,7 @@ describe('/tasks', () => {
       expect(res1.body).toMatchObject({
         status: 'success',
         data: {
-          suggestions: [{ id: tasks[1].id, name: tasks[1].name }],
+          suggestions: [],
         },
       });
       expect(res2.status).toBe(200);

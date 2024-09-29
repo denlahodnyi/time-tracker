@@ -9,17 +9,18 @@ datasource db {
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  firstName   String        @map("first_name") @db.VarChar(50)
-  lastName    String?       @default("") @map("last_name") @db.VarChar(50)
-  email       String        @unique @db.VarChar(255)
-  avatarUrl   String?       @default("") @map("avatar_url") @db.VarChar(200)
-  bio         String?       @default("") @db.VarChar(200)
-  password    String        @db.VarChar(255)
-  tasks       UserTasks[]
-  timeEntries TimeEntries[]
-  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt   DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  id              Int           @id @default(autoincrement())
+  firstName       String        @map("first_name") @db.VarChar(50)
+  lastName        String?       @default("") @map("last_name") @db.VarChar(50)
+  email           String        @unique @db.VarChar(255)
+  avatar          String?       @map("avatar") @db.VarChar(50)
+  avatarThumbnail String?       @map("avatar_thumbnail") @db.VarChar(50)
+  bio             String?       @default("") @db.VarChar(200)
+  password        String        @db.VarChar(255)
+  tasks           UserTasks[]
+  timeEntries     TimeEntries[]
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   @@map("users")
 }
@@ -28,7 +29,7 @@ model Task {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(100)
   description String?       @default("") @db.VarChar(255)
-  completedAt DateTime?     @db.Timestamptz() @map("completed_at")
+  completedAt DateTime?     @map("completed_at") @db.Timestamptz()
   users       UserTasks[]
   timeEntries TimeEntries[]
   createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz()

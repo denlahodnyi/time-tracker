@@ -1,4 +1,4 @@
-import type { User } from '@libs/prisma';
+import type { Prisma } from '@libs/prisma';
 import { Factory } from 'fishery';
 import invariant from 'tiny-invariant';
 
@@ -9,7 +9,10 @@ interface UserTransientParams {
   client?: Client;
 }
 
-const userFactory = Factory.define<User, UserTransientParams>(
+// Use Prisma.Result to grab computed fields
+type CreatedUser = Prisma.Result<Client['user'], undefined, 'create'>;
+
+const userFactory = Factory.define<CreatedUser, UserTransientParams>(
   ({ params, sequence, transientParams, onCreate }) => {
     onCreate(async () => {
       const { client } = transientParams;
@@ -23,7 +26,8 @@ const userFactory = Factory.define<User, UserTransientParams>(
           email: params.email || `john${sequence}@example.com`,
           password: await hashPassword(params.password || 'examplepassword'),
           bio: params.bio || null,
-          avatarUrl: params.avatarUrl || null,
+          avatar: params.avatar || null,
+          avatarThumbnail: params.avatarThumbnail || null,
         },
       });
     });
@@ -35,7 +39,9 @@ const userFactory = Factory.define<User, UserTransientParams>(
       email: params.email || `john${sequence}@example.com`,
       password: params.password || 'examplepassword',
       bio: params.bio || null,
-      avatarUrl: params.avatarUrl || null,
+      avatar: params.avatar || null,
+      avatarThumbnail: params.avatarThumbnail || null,
+      avatarUrls: { original: null, thumbnail: null },
       createdAt: params.createdAt || new Date(),
       updatedAt: params.updatedAt || new Date(),
     };

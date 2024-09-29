@@ -1,10 +1,11 @@
-import { Link, useLocation, useRouteLoaderData } from '@remix-run/react';
+import { Link, useLocation } from '@remix-run/react';
 import { HouseIcon, LogOutIcon, User2Icon } from 'lucide-react';
 
-import { useLogout } from '~/shared/api';
+import { useLogout, useProtectedLayerData } from '~/shared/api';
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -12,19 +13,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/shared/ui';
-import type loader from '../_p/loader.server';
 
 export default function MainHeader() {
   const { logout } = useLogout();
   const location = useLocation();
-
-  const protectedLoaderData = useRouteLoaderData<typeof loader>('routes/_p');
-  const { firstName = '', lastName = '' } =
-    protectedLoaderData?.data?.user || {};
-  const avatarFallback = `${firstName.at(0)}${lastName?.at(0) || ''}`;
+  const { user, avatarFallback } = useProtectedLayerData();
 
   return (
-    <header className="sticky top-0 flex items-center border-b border-b-primary bg-background px-3 py-2 md:px-5">
+    <header className="sticky top-0 z-30 flex items-center border-b border-b-primary bg-background px-3 py-2 md:px-5">
       {location.pathname !== '/' && (
         <Button
           asChild
@@ -40,6 +36,7 @@ export default function MainHeader() {
       <DropdownMenu>
         <DropdownMenuTrigger className="ml-auto mr-0">
           <Avatar className="h-10 w-10 border border-border text-lg md:h-12 md:w-12 md:text-xl">
+            <AvatarImage src={user?.avatarUrls.thumbnail} />
             <AvatarFallback>{avatarFallback}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
