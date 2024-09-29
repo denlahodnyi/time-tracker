@@ -11,6 +11,7 @@ router.route('/signin').post(userController.signInUser.mount);
 router.route('/users').get(userController.getUsers.mount);
 
 router.param('userId', requireAuth({ verifyAccessByParam: 'userId' }));
+
 router
   .route('/users/me')
   .all(
@@ -21,10 +22,24 @@ router
   .patch(userController.updateUser.mount)
   .delete(userController.deleteUser.mount);
 router
+  .route('/users/me/avatar')
+  .all(
+    requireAuth(),
+    (req, res, next) => ((req.isCurrentUserReq = true), next()),
+  )
+  .put(userController.uploadAvatar.mount)
+  .delete(userController.deleteAvatar.mount);
+
+router
   .route('/users/:userId')
   .get(userController.getUserById.mount)
   .patch(userController.updateUser.mount)
   .delete(userController.deleteUser.mount);
+router
+  .route('/users/:userId/avatar')
+  .all(requireAuth())
+  .put(userController.uploadAvatar.mount)
+  .delete(userController.deleteAvatar.mount);
 
 router
   .route('/tasks')

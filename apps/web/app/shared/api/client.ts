@@ -110,6 +110,7 @@ class ApiClient {
     requestOptions?: ClientRequestOptions,
   ) {
     const { fetchOpts, onAuthError } = requestOptions || {};
+    const isFormData = body instanceof FormData;
 
     try {
       const response = await fetch(this.makeFullEndpoint(path), {
@@ -117,10 +118,10 @@ class ApiClient {
         ...commonFetchOptions,
         ...(fetchOpts || {}),
         headers: {
-          'Content-Type': 'application/json',
+          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
           ...(fetchOpts?.headers || {}),
         },
-        body: JSON.stringify(body),
+        body: isFormData ? body : JSON.stringify(body),
       });
 
       const data = await this.handleResponse<TResponseData>(response, {

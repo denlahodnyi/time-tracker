@@ -41,7 +41,7 @@ describe('/signup', () => {
       expect(body.data.user).toHaveProperty('email', dummyUser.email);
       expect(body.data.user).toHaveProperty('bio');
       expect(body.data.user).toHaveProperty('id');
-      expect(body.data.user).toHaveProperty('avatarUrl');
+      expect(body.data.user).toHaveProperty('avatarUrls');
       expect(body.data.user).not.toHaveProperty('password');
     });
 
@@ -129,7 +129,7 @@ describe('/signin', () => {
       expect(body.data.user).toHaveProperty('lastName', dummyUser.lastName);
       expect(body.data.user).toHaveProperty('email', dummyUser.email);
       expect(body.data.user).toHaveProperty('bio', 'Test bio');
-      expect(body.data.user).toHaveProperty('avatarUrl');
+      expect(body.data.user).toHaveProperty('avatarUrls');
       expect(body.data.user).not.toHaveProperty('password');
       expect(() => verifyJwt(token as string)).not.toThrow();
       expect(verifyJwt(token as string)).toHaveProperty('userId', user?.id);

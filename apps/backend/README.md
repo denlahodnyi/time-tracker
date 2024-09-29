@@ -18,6 +18,31 @@ pnpm prisma:build
 - `DB_NAME`
 - `DB_PASSWORD`
 - `JWT_SECRET`
+- `AWS_S3_ACCESS_KEY_ID`
+- `AWS_S3_SECRET_ACCESS_KEY`
+- `AWS_S3_BUCKET_NAME`
+- `AWS_S3_REGION`
+
+## AWS setup
+
+1. Create S3 bucket
+2. Create IAM user
+3. Create permission policy for created bucket and apply it to IAM user. Avatars
+   are uploaded to `/avatars` subfolder
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
+      "Resource": "arn:aws:s3:::<bucket-name>/avatars/*"
+    }
+  ]
+}
+```
 
 ## Development
 

@@ -27,3 +27,11 @@ export const taskUpdateCounterCookie = createCookie('update-task', {
 export const taskCompleteCounterCookie = createCookie('complete-task', {
   httpOnly: true,
 });
+
+export const avatarUploadCounterCookie = createCookie('upload-avatar', {
+  httpOnly: true,
+});
+
+export const avatarDeleteCounterCookie = createCookie('upload-avatar', {
+  httpOnly: true,
+});

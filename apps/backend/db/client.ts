@@ -245,6 +245,16 @@ function getExtendedClient(options: Prisma.PrismaClientOptions) {
       },
     },
     result: {
+      user: {
+        avatarUrls: {
+          compute() {
+            return {
+              original: null as null | string,
+              thumbnail: null as null | string,
+            };
+          },
+        },
+      },
       task: {
         totalTimeSpent: {
           compute() {

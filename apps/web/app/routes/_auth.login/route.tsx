@@ -1,4 +1,5 @@
 import { Link, useFetcher, useLocation, useNavigate } from '@remix-run/react';
+import { ClockIcon } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { useFormErrors } from '~/shared/lib';
@@ -33,41 +34,49 @@ export default function LoginPage() {
 
   return (
     <div className="grid min-h-screen place-content-center">
-      <div className="w-64">
-        <Heading className="mb-5 text-center">Sign In</Heading>
-        <fetcher.Form className="space-y-3" method="post">
-          <div>
-            <TextField
-              required
-              error={errors.email && errors.email[0]}
-              label="Email"
-              name="email"
-              type="email"
-            />
+      <div className="">
+        <Heading className="mb-2 text-center text-4xl font-bold md:text-5xl">
+          <ClockIcon className="inline h-7 w-7 align-baseline md:h-10 md:w-10" />
+          TimeTrack
+        </Heading>
+        <div className="mx-auto w-64">
+          <Heading as="h2" className="mb-5 text-center">
+            Sign In
+          </Heading>
+          <fetcher.Form className="space-y-3" method="post">
+            <div>
+              <TextField
+                required
+                error={errors.email && errors.email[0]}
+                label="Email"
+                name="email"
+                type="email"
+              />
+            </div>
+            <div>
+              <TextField
+                required
+                error={errors.password && errors.password[0]}
+                inputVariant="password"
+                label="Password"
+                name="password"
+              />
+            </div>
+            <Button
+              aria-disabled={fetcher.state !== 'idle'}
+              className="mx-auto"
+              isLoading={fetcher.state !== 'idle'}
+              type="submit"
+            >
+              Login
+            </Button>
+          </fetcher.Form>
+          <div className="mt-4 border-t border-border pt-2 text-center">
+            <p>Doesn&apos;t have an account yet?</p>
+            <Button asChild variant="link">
+              <Link to="/signup">Sign up</Link>
+            </Button>
           </div>
-          <div>
-            <TextField
-              required
-              error={errors.password && errors.password[0]}
-              inputVariant="password"
-              label="Password"
-              name="password"
-            />
-          </div>
-          <Button
-            aria-disabled={fetcher.state !== 'idle'}
-            className="mx-auto"
-            isLoading={fetcher.state !== 'idle'}
-            type="submit"
-          >
-            Login
-          </Button>
-        </fetcher.Form>
-        <div className="mt-4 border-t border-border pt-2 text-center">
-          <p>Doesn&apos;t have an account yet?</p>
-          <Button asChild variant="link">
-            <Link to="/signup">Sign up</Link>
-          </Button>
         </div>
       </div>
     </div>

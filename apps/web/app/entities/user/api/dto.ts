@@ -9,6 +9,10 @@ export function dtoToUser(dto: UserDTO): UserBase {
     fullName: dto.lastName ? `${dto.firstName} ${dto.lastName}` : dto.firstName,
     email: dto.email,
     bio: dto.bio || '',
+    avatarUrls: {
+      original: dto.avatarUrls.original || '',
+      thumbnail: dto.avatarUrls.thumbnail || '',
+    },
   };
 }
 

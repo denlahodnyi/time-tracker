@@ -1,15 +1,14 @@
-import { useFetcher, useRouteLoaderData } from '@remix-run/react';
+import { useFetcher } from '@remix-run/react';
 
+import { useProtectedLayerData } from '~/shared/api';
 import { useFormErrors } from '~/shared/lib';
 import { Button, TextField, useSuccessAlert } from '~/shared/ui';
 import action from './action.server';
-import type loader from '../_p/loader.server';
 
 function UserProfileForm() {
+  const { user } = useProtectedLayerData();
   const fetcher = useFetcher<typeof action>();
   const formErrors = fetcher.data?.errors;
-  const protectedLoaderData = useRouteLoaderData<typeof loader>('routes/_p');
-  const { user } = protectedLoaderData?.data || {};
   const errors = useFormErrors(formErrors, [
     'firstName',
     'lastName',

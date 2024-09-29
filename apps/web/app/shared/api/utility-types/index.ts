@@ -14,7 +14,9 @@ export interface Routes {
   '/signin': RouteParts;
   '/signup': RouteParts;
   '/users/me': RouteParts;
+  '/users/me/avatar': RouteParts;
   '/users/:userId': RouteParts<{ params: { userId: number } }>;
+  '/users/:userId/avatar': RouteParts<{ params: { userId: number } }>;
   '/tasks': RouteParts<{
     query: { task_id?: number; filter_by?: 'completed' };
   }>;
@@ -72,7 +74,10 @@ export interface ServiceMethodReturn<TData = unknown> {
 
 export interface ServerActionHandlerReturn<TData = unknown> {
   setCookie: string;
-  data: ServiceMethodReturn<TData>['result'] & { _action: string };
+  data: ServiceMethodReturn<TData>['result'] & {
+    _action: string;
+    _count?: number | null;
+  };
 }
 
 export interface ServerLoaderHandlerReturn<TData = unknown> {
