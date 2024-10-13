@@ -6,6 +6,10 @@ import { requireAuth } from '../middlewares/index.js';
 
 const router = express.Router();
 
+router
+  .route('/')
+  .get((req, res) => res.status(200).json({ status: 'success' }));
+
 router.route('/signup').post(userController.registerUser.mount);
 router.route('/signin').post(userController.signInUser.mount);
 router.route('/users').get(userController.getUsers.mount);

@@ -19,7 +19,7 @@ const LOGIN_ROUTE = '/api/signin';
 const CREATE_DB_SCRIPT = 'pnpm db:push --skip-generate';
 
 export default class HttpTestContext {
-  protected randName!: string;
+  protected testDbUserName: string | null = null;
   protected pool!: pg.Pool | null;
   protected app!: Application;
   public client!: Client | null;
@@ -111,36 +111,27 @@ export default class HttpTestContext {
       // Create new name for temporary role and schema that will be used instead
       // of default public schema
       // Must not start with number
-      this.randName = 'a' + randomBytes(5).toString('hex');
+      const randName = 'a' + randomBytes(5).toString('hex');
+
       this.pool = new pg.Pool({ connectionString: env.DATABASE_URL });
 
-      await this.pool.query(
-        pgFormat(
-          'CREATE ROLE %I WITH CREATEDB LOGIN PASSWORD %L',
-          this.randName,
-          this.randName,
-        ),
-      );
-      await this.pool.query(
-        pgFormat(
-          'CREATE SCHEMA %I AUTHORIZATION %I',
-          this.randName,
-          this.randName,
-        ),
-      );
+      await createSchemaAndUser(this.pool, randName, randName);
+
+      this.testDbUserName = randName;
+
       await this.pool.end();
 
       const databaseUrl = new ConnectionUrlBuilder({
-        user: this.randName,
-        password: this.randName,
-        schema: this.randName, // required
+        user: this.testDbUserName,
+        password: this.testDbUserName,
+        schema: this.testDbUserName, // required
       }).url();
 
       // Create new pool and Prisma client under new schema and role
       this.pool = new pg.Pool({ connectionString: databaseUrl });
       this.client = initializeClient({
         pool: this.pool,
-        adapterOptions: { schema: this.randName }, // required
+        adapterOptions: { schema: this.testDbUserName }, // required
       });
 
       // Fill new database schema with tables
@@ -175,6 +166,16 @@ export default class HttpTestContext {
         await this.pool.end();
         this.pool = null;
       }
+      if (this.testDbUserName) {
+        this.pool = new pg.Pool({ connectionString: env.DATABASE_URL });
+        await dropSchemaAndUser(
+          this.pool,
+          this.testDbUserName,
+          this.testDbUserName,
+        );
+        await this.pool.end();
+        this.testDbUserName = null;
+      }
     }
   }
 
@@ -182,15 +183,35 @@ export default class HttpTestContext {
     try {
       if (this.client) await this.client.$disconnect();
       if (this.pool) await this.pool.end();
-
-      this.pool = new pg.Pool({ connectionString: env.DATABASE_URL });
-      await this.pool.query(
-        pgFormat('DROP SCHEMA IF EXISTS %I CASCADE', this.randName),
-      );
-      await this.pool.query(pgFormat('DROP ROLE IF EXISTS %I', this.randName));
-      await this.pool.end();
+      if (this.testDbUserName) {
+        this.pool = new pg.Pool({ connectionString: env.DATABASE_URL });
+        await dropSchemaAndUser(
+          this.pool,
+          this.testDbUserName,
+          this.testDbUserName,
+        );
+        await this.pool.end();
+        this.testDbUserName = null;
+      }
     } catch (error) {
       console.log(`HttpTestContext error: ${error}`);
     }
   }
+}
+
+async function createSchemaAndUser(
+  pool: pg.Pool,
+  schema: string,
+  user: string,
+) {
+  await pool.query(
+    pgFormat('CREATE ROLE %I WITH CREATEDB LOGIN PASSWORD %L', user, user),
+  );
+  await pool.query(
+    pgFormat('CREATE SCHEMA %I AUTHORIZATION %I', schema, schema),
+  );
+}
+async function dropSchemaAndUser(pool: pg.Pool, schema: string, user: string) {
+  await pool.query(pgFormat('DROP SCHEMA IF EXISTS %I CASCADE', schema));
+  await pool.query(pgFormat('DROP ROLE IF EXISTS %I', user));
 }

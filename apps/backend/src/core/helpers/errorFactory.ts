@@ -5,6 +5,7 @@ type ErrorCodes =
   | 'not_found'
   | 'unauthorized'
   | 'forbidden'
+  | 'conflict'
   | 'server_error';
 
 const errorFactory = {
@@ -34,6 +35,13 @@ const errorFactory = {
         return new ApiError({
           code: 404,
           message: 'Resource was not found',
+          ...(config || {}),
+        });
+      }
+      case 'conflict': {
+        return new ApiError({
+          code: 409,
+          message: 'Something went wrong',
           ...(config || {}),
         });
       }

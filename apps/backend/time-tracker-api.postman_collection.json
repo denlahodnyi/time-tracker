@@ -131,7 +131,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"den@g.com\",\n    \"password\": \"12345\"\n}"
+							"raw": "{\n    \"email\": \"jack@dev.dev\",\n    \"password\": \"12345\"\n}"
 						},
 						"url": {
 							"raw": "{{URI}}/signin",
@@ -171,7 +171,7 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": ""
+									"value": "1"
 								}
 							]
 						}
@@ -197,6 +197,54 @@
 									"key": "userId",
 									"value": ""
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload avatar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/Users/den/Pictures/work/4.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URI}}/users/me/avatar",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete avatar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/users/me/avatar",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"avatar"
 							]
 						}
 					},

@@ -1,4 +1,3 @@
-import type { MetaFunction } from '@remix-run/node';
 import {
   Link,
   useLoaderData,
@@ -44,10 +43,6 @@ export async function clientLoader({
       : null,
   };
 }
-
-export const meta: MetaFunction = () => {
-  return [{ title: 'Time tracker' }];
-};
 
 export default function Index() {
   const loaderData = useLoaderData<typeof loader & typeof clientLoader>();

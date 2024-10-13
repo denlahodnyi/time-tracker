@@ -337,6 +337,28 @@ describe('/tasks', () => {
         finishedAt: null,
       });
     });
+
+    it('returns 409 status code and error when trying to start task while active one is already exists', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent } = await httpCtx.getAuthAgent();
+      const startedAt = new Date().toISOString();
+
+      await agent.post('/api/tasks').send({
+        name: 'Example task #1',
+        description: 'Example description',
+        startedAt,
+      });
+
+      const { body, status } = await agent.post('/api/tasks').send({
+        name: 'Example task #2',
+        description: 'Example description',
+        startedAt,
+      });
+
+      expect(status).toBe(409);
+      getErrorResponseExpects(body);
+    });
   });
 
   describe('[GET] /tasks/:taskId', () => {
@@ -834,6 +856,39 @@ describe('/tasks', () => {
         });
 
       expect(status).toBe(400);
+      getErrorResponseExpects(body);
+    });
+
+    it('returns 409 status code and error when trying to stop inactive task', async () => {
+      HttpTestContext.assertClient(httpCtx.client);
+
+      const { agent, createdUser } = await httpCtx.getAuthAgent();
+      const task = await taskFactory.create(
+        {},
+        { transient: { client: httpCtx.client, userId: createdUser.id } },
+      );
+      const { body: startedResp } = await agent
+        .patch(`/api/tasks/${task.id}/event`)
+        .send({
+          event: 'start',
+          startedAt: new Date(),
+        });
+
+      await agent.patch(`/api/tasks/${task.id}/event`).send({
+        event: 'stop',
+        finishedAt: new Date().toISOString(),
+        entryId: startedResp.data.task.timeEntries[0].id,
+      });
+
+      const { status, body } = await agent
+        .patch(`/api/tasks/${task.id}/event`)
+        .send({
+          event: 'stop',
+          finishedAt: new Date().toISOString(),
+          entryId: startedResp.data.task.timeEntries[0].id,
+        });
+
+      expect(status).toBe(409);
       getErrorResponseExpects(body);
     });
   });

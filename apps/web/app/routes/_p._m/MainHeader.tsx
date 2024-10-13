@@ -34,7 +34,10 @@ export default function MainHeader() {
         </Button>
       )}
       <DropdownMenu>
-        <DropdownMenuTrigger className="ml-auto mr-0">
+        <DropdownMenuTrigger
+          aria-label="Show site menu"
+          className="ml-auto mr-0"
+        >
           <Avatar className="h-10 w-10 border border-border text-lg md:h-12 md:w-12 md:text-xl">
             <AvatarImage src={user?.avatarUrls.thumbnail} />
             <AvatarFallback>{avatarFallback}</AvatarFallback>
