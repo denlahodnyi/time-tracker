@@ -6,6 +6,10 @@ import createServer from './server/createServer.js';
 
 initializeClient();
 
-createServer().listen(env.PORT, () => {
-  console.log(`Listening on port ${env.PORT}`);
+const portArgIdx = process.argv.indexOf('--port');
+const port =
+  portArgIdx !== -1 ? Number(process.argv[portArgIdx + 1]) : env.PORT;
+
+createServer().listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });

@@ -24,6 +24,6 @@
     "prisma": "pnpm -F @libs/prisma prisma",
     "prisma:build": "pnpm -F @libs/prisma build",
     "prisma:generate": "pnpm -F @libs/prisma generate",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "pnpm -F e2e test"
   }
 }

@@ -47,7 +47,10 @@ function ActiveTask(props: ActiveTaskProps) {
   }, [isSuccessStop]);
 
   return (
-    <Task.TaskCard className={cn('group/container', props.className)}>
+    <Task.TaskCard
+      className={cn('group/container', props.className)}
+      data-testid="active-task"
+    >
       {isInProgress ? (
         <Heading as="h2" className="text-base md:text-xl">
           {activeTask?.name}

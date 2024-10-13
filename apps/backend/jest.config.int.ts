@@ -12,6 +12,8 @@ const config: Config = {
   // Include only /src/tests/
   testMatch: ['**/src/tests/**/?(*.)+(spec|test).[jt]s?(x)'],
   noStackTrace: true,
+  globalSetup: './src/tests/helpers/setupDatabase.ts',
+  globalTeardown: './src/tests/helpers/teardownDatabase.ts',
 };
 
 export default config;

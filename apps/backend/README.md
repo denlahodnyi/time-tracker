@@ -12,6 +12,12 @@ pnpm prisma:generate
 pnpm prisma:build
 ```
 
+Mark scripts as an executable:
+
+```sh
+chmod +x ./scripts/*
+```
+
 ## Required environment variables
 
 - `DB_USER`
@@ -60,6 +66,20 @@ pnpm prisma:build
    pnpm dev
    ```
 
+Database can be created and started using Docker
+
+To start run:
+
+```sh
+pnpm db:start-dev
+```
+
+To stop run:
+
+```sh
+pnpm db:stop-dev
+```
+
 ## Tests
 
 1. Set required variables in `.env.test`
@@ -71,7 +91,7 @@ For unit tests run
 pnpm test:unit
 ```
 
-For integration tests run
+For integration tests run **(Docker must be installed)**
 
 ```sh
 pnpm test:int

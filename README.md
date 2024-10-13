@@ -5,8 +5,9 @@ A simple web-based time-tracking demo application designed to help users efficie
 ## Technologies Used
 
 - Frontend: Typescript, Remix, Tailwindcss, Shadcn/ui
-- Backend: Typescript, Nodejs, Express, Postgresql, Prisma, AWS S3
-- Testing: Jest
+- Backend: Typescript, Nodejs, Express, Postgresql, Prisma, AWS S3, Docker, Postman
+- Testing: Jest, Playwright
+- Code quality: Eslint, Prettier
 
 ## Installation
 
@@ -26,6 +27,10 @@ To start backend and frontend run
 pnpm dev
 ```
 
+## E2E tests
+
+[Details](e2e/README.md)
+
 ## TODO
 
 - [x] add ability to mark as "Done"
@@ -33,4 +38,4 @@ pnpm dev
 - [x] add analytics
 - [ ] add projects
 - [ ] add teams
-- [ ] add E2E tests
+- [x] add E2E tests

@@ -17,6 +17,8 @@ export default async function seedData(seed: SeedClient) {
   const store = await seed.user((x) =>
     x(users.length, (modelCtx) => ({
       firstName: users[modelCtx.index].name,
+      avatar: null,
+      avatarThumbnail: null,
       email(ctx) {
         return ctx.data.firstName!.toLowerCase() + '@dev.dev';
       },

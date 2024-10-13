@@ -66,6 +66,22 @@ export default class Task extends ModelBase {
     let entries;
 
     if (data.startedAt) {
+      const active = await this.client.timeEntries.findFirst({
+        where: {
+          userId,
+          finishedAt: null,
+          NOT: {
+            startedAt: null,
+          },
+        },
+      });
+
+      if (active?.taskId) {
+        throw errorFactory.create('conflict', {
+          message: 'Some task is already in progress',
+        });
+      }
+
       entries = {
         create: [
           {
@@ -469,6 +485,23 @@ export default class Task extends ModelBase {
       throw errorFactory.create('not_found', { message: 'Task not found' });
     }
 
+    const active = await this.client.timeEntries.findFirst({
+      where: {
+        userId,
+        taskId,
+        finishedAt: null,
+        NOT: {
+          startedAt: null,
+        },
+      },
+    });
+
+    if (!active) {
+      throw errorFactory.create('conflict', {
+        message: 'Task is not active',
+      });
+    }
+
     const task = await this.client.task.update({
       data: {
         timeEntries: {
@@ -478,6 +511,10 @@ export default class Task extends ModelBase {
             },
             where: {
               id: data.entryId,
+              finishedAt: null,
+              NOT: {
+                startedAt: null,
+              },
             },
           },
         },

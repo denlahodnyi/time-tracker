@@ -50,6 +50,10 @@ export default function App() {
   );
 }
 
+export function meta() {
+  return [{ title: 'TimeTrack' }];
+}
+
 export function shouldRevalidate() {
   return false;
 }

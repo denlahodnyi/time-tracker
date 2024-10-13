@@ -11,7 +11,7 @@ const TEST_FILES = [
   '**/tests/**/*',
   '**/__tests__/**/*',
   '**/?(*.)+(spec|test).[jt]s?(x)',
-  'jestSetup.[jt]s',
+  'jestSetup*.[jt]s',
 ];
 
 export default tseslint.config(

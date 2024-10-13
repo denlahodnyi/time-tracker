@@ -1,0 +1,11 @@
+name: time-tracker
+services:
+  db:
+    image: postgres
+    container_name: test-db
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD:?error}
+      - POSTGRES_USER=${DB_USER:?error}
+      - POSTGRES_DB=${DB_NAME:?error}
+    ports:
+      - '${DB_PORT:-5432}:5432'

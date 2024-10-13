@@ -64,7 +64,7 @@ function TaskItem(props: TaskProps) {
       asChild
       className={cn('grid-cols-1 md:grid-cols-2', className)}
     >
-      <article>
+      <article data-testid="task">
         <div>
           <Heading as="h2" className="text-base md:text-lg">
             {task.name}
@@ -135,6 +135,7 @@ function TaskItem(props: TaskProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
+                  aria-label="Show additional actions"
                   className="h-auto w-auto rounded-full p-1"
                   variant="outline"
                 >
@@ -173,8 +174,12 @@ function TaskItem(props: TaskProps) {
                     </Button>
                   </DropdownMenuItem>
                 </fetcher.Form>
-                <DropdownMenuItem asChild>
-                  <DeleteTaskAlert taskId={task.id}>
+                <DeleteTaskAlert taskId={task.id}>
+                  <DropdownMenuItem
+                    asChild
+                    // Prevent closing Alert after dropdown item select
+                    onSelect={(e) => e.preventDefault()}
+                  >
                     <Button
                       className="w-full justify-start p-0"
                       variant="ghost"
@@ -182,8 +187,8 @@ function TaskItem(props: TaskProps) {
                       <Trash2Icon className="h-5 w-5" />
                       Delete task
                     </Button>
-                  </DeleteTaskAlert>
-                </DropdownMenuItem>
+                  </DropdownMenuItem>
+                </DeleteTaskAlert>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
