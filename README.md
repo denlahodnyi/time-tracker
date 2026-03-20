@@ -1,6 +1,13 @@
 # Time tracker
 
-A simple web-based time-tracking demo application designed to help users efficiently monitor and manage their time spent on tasks.
+A simple web-based time-tracking demo application designed to help users
+efficiently monitor and manage their time spent on tasks.
+
+<img src="./docs/home.png" width="200" alt="signin page">
+<img src="./docs/tasks.png" width="150" alt="home page">
+<img src="./docs/task.png" width="200" alt="task details">
+<img src="./docs/stats.png" width="200" alt="statistics page">
+<img src="./docs/profile.png" width="200" alt="profile page">
 
 ## Technologies Used
 
